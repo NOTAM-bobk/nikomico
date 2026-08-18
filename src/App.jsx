@@ -2,18 +2,25 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 
 /* ==========================================================================
    CONFIG — edit everything here. Nothing below this block needs to change
-   for normal content updates (nav, socials, PRs, sponsors, timeline, footer).
+   for normal content updates (nav, socials, records, achievements, sponsors,
+   gallery, timeline, footer).
    ========================================================================== */
 
 const CONFIG = {
 
   name: 'Nico Schultz',
-  tagline: 'Distance runner. Record chaser. Still counting.',
+  tagline: '800m specialist. Indoor and outdoor. Still chasing state.',
+
+  // Drop matching files into /public/images to bring these to life.
+  images: {
+    hero: '/images/hero-action.jpg',
+  },
 
   // Top nav quick links (in-page anchors or external URLs)
   nav: [
     { label: 'Home', href: '#top' },
     { label: 'Records', href: '#prs' },
+    { label: 'Achievements', href: '#achievements' },
     { label: 'Sponsors', href: '#sponsors' },
     { label: 'Journey', href: '#journey' },
     { label: 'Contact', href: '#contact' },
@@ -23,19 +30,26 @@ const CONFIG = {
   // icon options: instagram, twitter, tiktok, strava, youtube, linkedin, email
   socials: [
     { platform: 'Instagram', icon: 'instagram', url: 'https://instagram.com/' },
+    { platform: 'YouTube', icon: 'youtube', url: 'https://youtube.com/' },
     { platform: 'Twitter/X', icon: 'twitter', url: 'https://twitter.com/' },
     { platform: 'Strava', icon: 'strava', url: 'https://strava.com/' },
     { platform: 'TikTok', icon: 'tiktok', url: 'https://tiktok.com/' },
   ],
 
-  // Personal Records
+  // Personal Records — 800m only, indoor and outdoor
   prs: [
-    { event: '800 Meters', mark: '1:52.14', meta: 'Set Spring 2026' },
-    { event: '1600 Meters', mark: '4:11.87', meta: 'Set Spring 2026' },
-    { event: '3200 Meters', mark: '9:02.33', meta: 'Set Winter 2025' },
-    { event: '5K Road', mark: '15:24', meta: 'Set Fall 2025' },
-    { event: 'Cross Country 5K', mark: '15:41', meta: 'Regional Championship' },
-    { event: '10K Road', mark: '32:10', meta: 'Set Fall 2025' },
+    { event: '800m Indoor', mark: '1:53.02', meta: 'Conference Indoor Championships — Feb 2026' },
+    { event: '800m Outdoor', mark: '1:52.14', meta: 'Sectional Championships — May 2026' },
+  ],
+
+  // Achievements — wins, medals, and honors
+  achievements: [
+    { title: '1st Place, 800m', meta: 'Sectional Championships — 2026', detail: 'Broke away with 200m to go to take the section title in a personal-best time.' },
+    { title: '2nd Place, 800m Indoor', meta: 'Conference Indoor Championships — 2026', detail: 'Ran down the leader on the final straight, finishing a stride short of the win.' },
+    { title: 'All-Conference, Indoor Track', meta: 'Winter 2026', detail: 'Named to the all-conference team after a season of consistent top-three finishes.' },
+    { title: '3rd Place, 800m', meta: 'Regional Championships — 2025', detail: 'Held off a five-way pack in the final 100m to medal at regionals as a junior.' },
+    { title: 'Team MVP, Track & Field', meta: 'Roosevelt High School — 2025', detail: 'Voted team MVP by coaches and teammates for the outdoor season.' },
+    { title: 'Academic All-Conference', meta: '2025 — 2026', detail: 'Recognized for maintaining conference honor-roll standards across both seasons.' },
   ],
 
   // Sponsors — shown in the sliding carousel.
@@ -46,6 +60,13 @@ const CONFIG = {
     { name: 'TrailForge', tier: 'Gear Sponsor', initials: 'TF', color: '#B7742F' },
     { name: 'PaceLab', tier: 'Training Partner', initials: 'PL', color: '#9A5A44' },
     { name: 'NorthWind Co.', tier: 'Local Sponsor', initials: 'NW', color: '#556270' },
+  ],
+
+  // Race-day gallery — drop matching files into /public/images
+  gallery: [
+    { src: '/images/gallery-1.jpg', caption: 'Kicking for the line — Sectional Championships' },
+    { src: '/images/gallery-2.jpg', caption: 'Pre-race warmup — Regional Championships' },
+    { src: '/images/gallery-3.jpg', caption: 'Podium finish — Conference Indoor' },
   ],
 
   // Journey timeline — order matters, earliest first
@@ -72,16 +93,16 @@ const CONFIG = {
       year: '2025 — Present',
       title: 'Chasing State, Chasing More',
       org: 'Roosevelt High School / Independent Training',
-      desc: 'Training for a state qualifying mark, picking up local sponsors along the way, and building toward the next level.',
+      desc: 'Training for a state qualifying mark in the 800m, picking up local sponsors along the way, and building toward the next level.',
     },
   ],
 
   // Footer links
   footerLinks: [
     { label: 'Records', href: '#prs' },
+    { label: 'Achievements', href: '#achievements' },
     { label: 'Sponsors', href: '#sponsors' },
     { label: 'Journey', href: '#journey' },
-    { label: 'Press Kit', href: '#' },
   ],
 
   gofundme: 'https://gofundme.com/',
@@ -100,10 +121,40 @@ const ICONS = {
   youtube: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 8.2C22 6.5 20.7 5.2 19 5.1C16.7 5 12 5 12 5C12 5 7.3 5 5 5.1C3.3 5.2 2 6.5 2 8.2C1.9 9.6 1.9 12 1.9 12C1.9 12 1.9 14.4 2 15.8C2 17.5 3.3 18.8 5 18.9C7.3 19 12 19 12 19C12 19 16.7 19 19 18.9C20.7 18.8 22 17.5 22 15.8C22.1 14.4 22.1 12 22.1 12C22.1 12 22.1 9.6 22 8.2ZM9.9 15.3V8.7L15.7 12L9.9 15.3Z"/></svg>',
   linkedin: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.3 3C4 3 3 4 3 5.3S4 7.6 5.3 7.6 7.6 6.6 7.6 5.3 6.6 3 5.3 3ZM3.3 9.1H7.3V21H3.3V9.1ZM10.3 9.1H14.1V10.8H14.2C14.7 9.9 15.9 8.9 17.7 8.9C21.4 8.9 22.1 11.3 22.1 14.4V21H18.1V15.2C18.1 13.8 18.1 12 16.1 12C14.1 12 13.8 13.5 13.8 15.1V21H10.3V9.1Z"/></svg>',
   email: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7L12 13L21 7"/></svg>',
+  medal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L6.2 10.2M15 4L17.8 10.2M9 4H15"/><circle cx="12" cy="14.5" r="5.5"/><path d="M12 11.6L13 13.7L15.3 14L13.6 15.6L14 17.9L12 16.8L10 17.9L10.4 15.6L8.7 14L11 13.7L12 11.6Z"/></svg>',
 }
 
 function Icon({ name }) {
   return <span className="icon" dangerouslySetInnerHTML={{ __html: ICONS[name] || ICONS.email }} />
+}
+
+/* ==========================================================================
+   Reusable scroll-reveal hook — observes a list of refs and tracks which
+   indices have entered the viewport. Used by the records, achievements,
+   and gallery grids.
+   ========================================================================== */
+
+function useSectionReveal() {
+  const refs = useRef([])
+  const [visible, setVisible] = useState(() => new Set())
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = Number(entry.target.dataset.idx)
+            setVisible((prev) => (prev.has(idx) ? prev : new Set(prev).add(idx)))
+          }
+        })
+      },
+      { threshold: 0.2, rootMargin: '0px 0px -8% 0px' }
+    )
+    refs.current.forEach((el) => el && observer.observe(el))
+    return () => observer.disconnect()
+  }, [])
+
+  return { refs, visible }
 }
 
 /* ==========================================================================
@@ -112,42 +163,38 @@ function Icon({ name }) {
 
 export default function App() {
   const [loaderHidden, setLoaderHidden] = useState(false)
-  const [typedName, setTypedName] = useState('')
   const [navScrolled, setNavScrolled] = useState(false)
+  const [scrollProgress, setScrollProgress] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
-  const [prVisible, setPrVisible] = useState(new Set())
-  const [timelineVisible, setTimelineVisible] = useState(new Set())
 
   const canvasRef = useRef(null)
-  const prRefs = useRef([])
   const timelineRefs = useRef([])
+  const [timelineVisible, setTimelineVisible] = useState(new Set())
   const timelineWrapRef = useRef(null)
   const progressPathRef = useRef(null)
   const footerSentinelRef = useRef(null)
   const modalShownRef = useRef(false)
 
-  /* ---- Loader + typewriter ---- */
+  const prReveal = useSectionReveal()
+  const achievementReveal = useSectionReveal()
+  const galleryReveal = useSectionReveal()
+
+  /* ---- Loader ---- */
   useEffect(() => {
-    const t = setTimeout(() => {
-      setLoaderHidden(true)
-      const text = CONFIG.name
-      let i = 0
-      const tick = () => {
-        if (i <= text.length) {
-          setTypedName(text.slice(0, i))
-          i++
-          setTimeout(tick, 55 + Math.random() * 55)
-        }
-      }
-      tick()
-    }, 550)
+    const t = setTimeout(() => setLoaderHidden(true), 500)
     return () => clearTimeout(t)
   }, [])
 
-  /* ---- Nav scrolled state ---- */
+  /* ---- Nav scrolled state + scroll progress (single listener) ---- */
   useEffect(() => {
-    const onScroll = () => setNavScrolled(window.scrollY > 12)
+    const onScroll = () => {
+      setNavScrolled(window.scrollY > 12)
+      const doc = document.documentElement
+      const max = doc.scrollHeight - doc.clientHeight
+      setScrollProgress(max > 0 ? Math.min(100, (window.scrollY / max) * 100) : 0)
+    }
+    onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -158,7 +205,7 @@ export default function App() {
     const ctx = canvas.getContext('2d')
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const grays = ['#918B7C', '#B9B2A0', '#57534A', '#1A1917', '#322F29']
-    const spacing = 42
+    const spacing = 26
     let dots = []
     let w, h
     let rafId
@@ -175,7 +222,7 @@ export default function App() {
             baseColor: grays[Math.floor(Math.random() * grays.length)],
             phase: Math.random() * Math.PI * 2,
             speed: 0.15 + Math.random() * 0.25,
-            radius: 1.1 + Math.random() * 1.1,
+            radius: 0.75 + Math.random() * 0.7,
           })
         }
       }
@@ -194,7 +241,7 @@ export default function App() {
       const time = t * 0.001
       for (const d of dots) {
         const pulse = (Math.sin(time * d.speed + d.phase) + 1) / 2
-        ctx.globalAlpha = 0.25 + pulse * 0.55
+        ctx.globalAlpha = 0.16 + pulse * 0.38
         ctx.fillStyle = d.baseColor
         ctx.beginPath()
         ctx.arc(d.x, d.y, d.radius * devicePixelRatio, 0, Math.PI * 2)
@@ -226,23 +273,6 @@ export default function App() {
       clearTimeout(loadTimer)
       if (rafId) cancelAnimationFrame(rafId)
     }
-  }, [])
-
-  /* ---- Scroll reveal: PR cards ---- */
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const idx = Number(entry.target.dataset.idx)
-            setPrVisible((prev) => new Set(prev).add(idx))
-          }
-        })
-      },
-      { threshold: 0.2, rootMargin: '0px 0px -8% 0px' }
-    )
-    prRefs.current.forEach((el) => el && observer.observe(el))
-    return () => observer.disconnect()
   }, [])
 
   /* ---- Scroll reveal: timeline items ---- */
@@ -338,12 +368,8 @@ export default function App() {
       {/* ============ LOADER ============ */}
       <div id="loader" className={loaderHidden ? 'loader-hidden' : ''} aria-hidden="true">
         <div className="loader-inner">
-          <div className="loader-mark">
-            <span className="loader-dot"></span>
-            <span className="loader-dot"></span>
-            <span className="loader-dot"></span>
-          </div>
-          <p className="loader-label">LOADING</p>
+          <p className="loader-mark">N·S</p>
+          <div className="loader-bar"><span></span></div>
         </div>
       </div>
 
@@ -372,6 +398,7 @@ export default function App() {
                 </a>
               ))}
             </div>
+            <span className="nav-divider" aria-hidden="true"></span>
             <button
               className="nav-toggle"
               aria-label="Toggle menu"
@@ -382,18 +409,19 @@ export default function App() {
             </button>
           </div>
         </div>
+        <div className="nav-progress" style={{ width: `${scrollProgress}%` }} aria-hidden="true"></div>
       </header>
 
       <main id="top">
 
         {/* ============ HERO ============ */}
         <section className="hero" id="home">
+          <div className="hero-media" aria-hidden="true">
+            <img src={CONFIG.images.hero} alt="" loading="eager" />
+          </div>
           <div className="hero-content">
-            <p className="hero-eyebrow">ATHLETE&nbsp;/&nbsp;PORTFOLIO</p>
-            <h1 className="hero-name">
-              <span id="typed-name" aria-label={CONFIG.name}>{typedName}</span>
-              <span className="cursor" aria-hidden="true">|</span>
-            </h1>
+            <p className="hero-eyebrow">TRACK &amp; FIELD</p>
+            <h1 className="hero-name" aria-label={CONFIG.name}>{CONFIG.name}</h1>
             <p className="hero-tagline">{CONFIG.tagline}</p>
             <a href="#journey" className="scroll-cue" aria-label="Scroll to explore">
               <span className="scroll-cue-line"></span>
@@ -419,15 +447,16 @@ export default function App() {
           <div className="section-inner">
             <p className="section-eyebrow">01 — BY THE NUMBERS</p>
             <h2 className="section-title">Personal Records</h2>
-            <p className="section-sub">Times, marks, and results — updated after every meet.</p>
+            <p className="section-sub">Two events, one focus.</p>
 
             <div className="pr-grid">
               {CONFIG.prs.map((pr, idx) => (
                 <div
                   key={pr.event}
-                  ref={(el) => (prRefs.current[idx] = el)}
+                  ref={(el) => (prReveal.refs.current[idx] = el)}
                   data-idx={idx}
-                  className={`pr-card ${prVisible.has(idx) ? 'in-view' : ''}`}
+                  style={{ '--i': idx }}
+                  className={`pr-card ${prReveal.visible.has(idx) ? 'in-view' : ''}`}
                 >
                   <p className="pr-event">{pr.event}</p>
                   <p className="pr-mark">{pr.mark}</p>
@@ -438,12 +467,38 @@ export default function App() {
           </div>
         </section>
 
+        {/* ============ ACHIEVEMENTS ============ */}
+        <section className="achievements" id="achievements">
+          <div className="section-inner">
+            <p className="section-eyebrow">02 — HONORS &amp; RESULTS</p>
+            <h2 className="section-title">Achievements</h2>
+            <p className="section-sub">Results that back up the times.</p>
+
+            <div className="achievements-grid">
+              {CONFIG.achievements.map((a, idx) => (
+                <div
+                  key={a.title}
+                  ref={(el) => (achievementReveal.refs.current[idx] = el)}
+                  data-idx={idx}
+                  style={{ '--i': idx }}
+                  className={`achievement-card ${achievementReveal.visible.has(idx) ? 'in-view' : ''}`}
+                >
+                  <span className="achievement-icon"><Icon name="medal" /></span>
+                  <p className="achievement-meta">{a.meta}</p>
+                  <h3 className="achievement-title">{a.title}</h3>
+                  <p className="achievement-detail">{a.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* ============ SPONSORS ============ */}
         <section className="sponsors" id="sponsors">
           <div className="section-inner">
-            <p className="section-eyebrow">02 — BACKED BY</p>
+            <p className="section-eyebrow">03 — BACKED BY</p>
             <h2 className="section-title">Sponsors &amp; Partners</h2>
-            <p className="section-sub">The teams and brands behind every mile.</p>
+            <p className="section-sub">The brands behind every mile.</p>
           </div>
 
           <div className="sponsor-carousel">
@@ -459,10 +514,33 @@ export default function App() {
           </div>
         </section>
 
+        {/* ============ GALLERY ============ */}
+        <section className="gallery" id="gallery">
+          <div className="section-inner">
+            <p className="section-eyebrow">04 — ON THE LINE</p>
+            <h2 className="section-title">Race Day</h2>
+          </div>
+
+          <div className="gallery-grid section-inner">
+            {CONFIG.gallery.map((g, idx) => (
+              <figure
+                key={g.src}
+                ref={(el) => (galleryReveal.refs.current[idx] = el)}
+                data-idx={idx}
+                style={{ '--i': idx }}
+                className={`gallery-item ${galleryReveal.visible.has(idx) ? 'in-view' : ''}`}
+              >
+                <img src={g.src} alt={g.caption} loading="lazy" />
+                <figcaption>{g.caption}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+
         {/* ============ JOURNEY / TIMELINE ============ */}
         <section className="journey" id="journey">
           <div className="section-inner">
-            <p className="section-eyebrow">03 — THE JOURNEY</p>
+            <p className="section-eyebrow">05 — THE JOURNEY</p>
             <h2 className="section-title">Middle School to Now</h2>
             <p className="section-sub">Every season builds on the last.</p>
           </div>
@@ -528,7 +606,7 @@ export default function App() {
           <p className="modal-eyebrow">BEFORE YOU GO</p>
           <h3 className="modal-title" id="modal-title">Want to help out?</h3>
           <p className="modal-body">
-            This site is built and maintained independently. You can reach out directly, or support Nico's season through his GoFundMe.
+            This site is built and maintained independently. Reach out directly, or support Nico's season through his GoFundMe.
           </p>
           <div className="modal-actions">
             <a href={CONFIG.contact} className="modal-btn modal-btn-primary" target="_blank" rel="noopener noreferrer">
