@@ -8,7 +8,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 
 const CONFIG = {
 
-  name: 'Nico Schultz',
+  name: 'Niko Schultz',
   tagline: '800m specialist. Indoor and outdoor. Still chasing state.',
 
   // Drop matching files into /public/images to bring these to life.
@@ -36,10 +36,11 @@ const CONFIG = {
     { platform: 'TikTok', icon: 'tiktok', url: 'https://tiktok.com/' },
   ],
 
-  // Personal Records — 800m only, indoor and outdoor
+  // Personal Records — 800m only, indoor and outdoor.
+  // `color` tints that card's top bar, icon, and hover glow.
   prs: [
-    { event: '800m Indoor', mark: '1:53.02', meta: 'Conference Indoor Championships — Feb 2026' },
-    { event: '800m Outdoor', mark: '1:52.14', meta: 'Sectional Championships — May 2026' },
+    { event: '800m Indoor', mark: '1:53.02', meta: 'Conference Indoor Championships — Feb 2026', color: '#B7742F' },
+    { event: '800m Outdoor', mark: '1:52.14', meta: 'Sectional Championships — May 2026', color: '#3E6B72' },
   ],
 
   // Achievements — wins, medals, and honors
@@ -122,6 +123,7 @@ const ICONS = {
   linkedin: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.3 3C4 3 3 4 3 5.3S4 7.6 5.3 7.6 7.6 6.6 7.6 5.3 6.6 3 5.3 3ZM3.3 9.1H7.3V21H3.3V9.1ZM10.3 9.1H14.1V10.8H14.2C14.7 9.9 15.9 8.9 17.7 8.9C21.4 8.9 22.1 11.3 22.1 14.4V21H18.1V15.2C18.1 13.8 18.1 12 16.1 12C14.1 12 13.8 13.5 13.8 15.1V21H10.3V9.1Z"/></svg>',
   email: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7L12 13L21 7"/></svg>',
   medal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L6.2 10.2M15 4L17.8 10.2M9 4H15"/><circle cx="12" cy="14.5" r="5.5"/><path d="M12 11.6L13 13.7L15.3 14L13.6 15.6L14 17.9L12 16.8L10 17.9L10.4 15.6L8.7 14L11 13.7L12 11.6Z"/></svg>',
+  stopwatch: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 13L15 10.5M9 3H15M12 3V5.5"/></svg>',
 }
 
 function Icon({ name }) {
@@ -157,12 +159,19 @@ function useSectionReveal() {
   return { refs, visible }
 }
 
+/* Fades an <img> in once it has actually loaded, instead of showing a
+   blank/white box while the file is missing or still downloading. */
+function handleImgLoad(e) {
+  e.currentTarget.classList.add('loaded')
+}
+
 /* ==========================================================================
    APP
    ========================================================================== */
 
 export default function App() {
   const [loaderHidden, setLoaderHidden] = useState(false)
+  const [typedName, setTypedName] = useState('')
   const [navScrolled, setNavScrolled] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -182,43 +191,77 @@ export default function App() {
 
   /* ---- Loader ---- */
   useEffect(() => {
-    const t = setTimeout(() => setLoaderHidden(true), 500)
+    const t = setTimeout(() => setLoaderHidden(true), 700)
     return () => clearTimeout(t)
   }, [])
 
-  /* ---- Nav scrolled state + scroll progress (single listener) ---- */
+  /* ---- Typewriter name, starts once the loader clears ---- */
   useEffect(() => {
-    const onScroll = () => {
+    if (!loaderHidden) return
+    const text = CONFIG.name
+    let i = 0
+    let timer
+    const tick = () => {
+      if (i <= text.length) {
+        setTypedName(text.slice(0, i))
+        i++
+        timer = setTimeout(tick, 70 + Math.random() * 55)
+      }
+    }
+    tick()
+    return () => clearTimeout(timer)
+  }, [loaderHidden])
+
+  /* ---- Nav scrolled state + scroll progress, rAF-throttled to avoid
+     doing layout work on every scroll event ---- */
+  useEffect(() => {
+    let ticking = false
+    const update = () => {
       setNavScrolled(window.scrollY > 12)
       const doc = document.documentElement
       const max = doc.scrollHeight - doc.clientHeight
       setScrollProgress(max > 0 ? Math.min(100, (window.scrollY / max) * 100) : 0)
+      ticking = false
     }
-    onScroll()
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(update)
+      }
+    }
+    update()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  /* ---- Ambient dot field (canvas) ---- */
+  /* ---- Ambient dot field (canvas) ----
+     Rendered at viewport size only (not full page height) since the layer
+     is fixed and decorative — dots below the fold are never visible, so
+     drawing them was pure wasted work. This also removes the dependency on
+     document height, which used to change after images loaded and left a
+     stale, undersized canvas (visible as a blank gap while scrolling). */
   useEffect(() => {
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const grays = ['#918B7C', '#B9B2A0', '#57534A', '#1A1917', '#322F29']
     const spacing = 26
+    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    const frameInterval = 1000 / 30 // ambient layer only needs ~30fps
     let dots = []
     let w, h
     let rafId
+    let lastDraw = 0
 
     function buildDots() {
       dots = []
-      const cols = Math.ceil(w / (spacing * devicePixelRatio))
-      const rows = Math.ceil(h / (spacing * devicePixelRatio))
+      const cols = Math.ceil(w / (spacing * dpr))
+      const rows = Math.ceil(h / (spacing * dpr))
       for (let x = 0; x < cols; x++) {
         for (let y = 0; y < rows; y++) {
           dots.push({
-            x: x * spacing * devicePixelRatio + (spacing * devicePixelRatio) / 2,
-            y: y * spacing * devicePixelRatio + (spacing * devicePixelRatio) / 2,
+            x: x * spacing * dpr + (spacing * dpr) / 2,
+            y: y * spacing * dpr + (spacing * dpr) / 2,
             baseColor: grays[Math.floor(Math.random() * grays.length)],
             phase: Math.random() * Math.PI * 2,
             speed: 0.15 + Math.random() * 0.25,
@@ -229,25 +272,28 @@ export default function App() {
     }
 
     function resize() {
-      w = canvas.width = window.innerWidth * devicePixelRatio
-      h = canvas.height = document.documentElement.scrollHeight * devicePixelRatio
+      w = canvas.width = window.innerWidth * dpr
+      h = canvas.height = window.innerHeight * dpr
       canvas.style.width = window.innerWidth + 'px'
-      canvas.style.height = document.documentElement.scrollHeight + 'px'
+      canvas.style.height = window.innerHeight + 'px'
       buildDots()
     }
 
     function draw(t) {
-      ctx.clearRect(0, 0, w, h)
-      const time = t * 0.001
-      for (const d of dots) {
-        const pulse = (Math.sin(time * d.speed + d.phase) + 1) / 2
-        ctx.globalAlpha = 0.16 + pulse * 0.38
-        ctx.fillStyle = d.baseColor
-        ctx.beginPath()
-        ctx.arc(d.x, d.y, d.radius * devicePixelRatio, 0, Math.PI * 2)
-        ctx.fill()
+      if (t - lastDraw >= frameInterval) {
+        lastDraw = t
+        ctx.clearRect(0, 0, w, h)
+        const time = t * 0.001
+        for (const d of dots) {
+          const pulse = (Math.sin(time * d.speed + d.phase) + 1) / 2
+          ctx.globalAlpha = 0.16 + pulse * 0.38
+          ctx.fillStyle = d.baseColor
+          ctx.beginPath()
+          ctx.arc(d.x, d.y, d.radius * dpr, 0, Math.PI * 2)
+          ctx.fill()
+        }
+        ctx.globalAlpha = 1
       }
-      ctx.globalAlpha = 1
       if (!reducedMotion) rafId = requestAnimationFrame(draw)
     }
 
@@ -259,7 +305,6 @@ export default function App() {
 
     resize()
     window.addEventListener('resize', debouncedResize)
-    const loadTimer = setTimeout(resize, 300)
 
     if (reducedMotion) {
       draw(0)
@@ -270,7 +315,6 @@ export default function App() {
     return () => {
       window.removeEventListener('resize', debouncedResize)
       clearTimeout(resizeTimer)
-      clearTimeout(loadTimer)
       if (rafId) cancelAnimationFrame(rafId)
     }
   }, [])
@@ -365,11 +409,12 @@ export default function App() {
 
   return (
     <>
-      {/* ============ LOADER ============ */}
+      {/* ============ SKELETON LOADER ============ */}
       <div id="loader" className={loaderHidden ? 'loader-hidden' : ''} aria-hidden="true">
-        <div className="loader-inner">
-          <p className="loader-mark">N·S</p>
-          <div className="loader-bar"><span></span></div>
+        <div className="skeleton-wrap">
+          <span className="skeleton skeleton-eyebrow"></span>
+          <span className="skeleton skeleton-title"></span>
+          <span className="skeleton skeleton-tagline"></span>
         </div>
       </div>
 
@@ -417,11 +462,14 @@ export default function App() {
         {/* ============ HERO ============ */}
         <section className="hero" id="home">
           <div className="hero-media" aria-hidden="true">
-            <img src={CONFIG.images.hero} alt="" loading="eager" />
+            <img src={CONFIG.images.hero} alt="" loading="eager" onLoad={handleImgLoad} />
           </div>
           <div className="hero-content">
             <p className="hero-eyebrow">TRACK &amp; FIELD</p>
-            <h1 className="hero-name" aria-label={CONFIG.name}>{CONFIG.name}</h1>
+            <h1 className="hero-name" aria-label={CONFIG.name}>
+              <span>{typedName}</span>
+              <span className="cursor" aria-hidden="true">|</span>
+            </h1>
             <p className="hero-tagline">{CONFIG.tagline}</p>
             <a href="#journey" className="scroll-cue" aria-label="Scroll to explore">
               <span className="scroll-cue-line"></span>
@@ -431,7 +479,7 @@ export default function App() {
         </section>
 
         {/* ============ SOCIAL STRIP ============ */}
-        <section className="social-strip" aria-label="Follow Nico">
+        <section className="social-strip" aria-label="Follow Niko">
           <div className="social-strip-inner">
             {CONFIG.socials.map((s) => (
               <a key={s.platform} href={s.url} target="_blank" rel="noopener noreferrer">
@@ -455,10 +503,13 @@ export default function App() {
                   key={pr.event}
                   ref={(el) => (prReveal.refs.current[idx] = el)}
                   data-idx={idx}
-                  style={{ '--i': idx }}
+                  style={{ '--i': idx, '--pr-color': pr.color }}
                   className={`pr-card ${prReveal.visible.has(idx) ? 'in-view' : ''}`}
                 >
-                  <p className="pr-event">{pr.event}</p>
+                  <div className="pr-card-top">
+                    <span className="pr-icon"><Icon name="stopwatch" /></span>
+                    <p className="pr-event">{pr.event}</p>
+                  </div>
                   <p className="pr-mark">{pr.mark}</p>
                   <p className="pr-meta">{pr.meta}</p>
                 </div>
@@ -530,7 +581,7 @@ export default function App() {
                 style={{ '--i': idx }}
                 className={`gallery-item ${galleryReveal.visible.has(idx) ? 'in-view' : ''}`}
               >
-                <img src={g.src} alt={g.caption} loading="lazy" />
+                <img src={g.src} alt={g.caption} loading="lazy" onLoad={handleImgLoad} />
                 <figcaption>{g.caption}</figcaption>
               </figure>
             ))}
@@ -606,7 +657,7 @@ export default function App() {
           <p className="modal-eyebrow">BEFORE YOU GO</p>
           <h3 className="modal-title" id="modal-title">Want to help out?</h3>
           <p className="modal-body">
-            This site is built and maintained independently. Reach out directly, or support Nico's season through his GoFundMe.
+            This site is built and maintained independently. Reach out directly, or support Niko's season through his GoFundMe.
           </p>
           <div className="modal-actions">
             <a href={CONFIG.contact} className="modal-btn modal-btn-primary" target="_blank" rel="noopener noreferrer">
