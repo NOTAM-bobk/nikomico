@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Changa+One&family=Rubik+Spray+Paint&display=swap');
+
 /* ==========================================================================
-   NICO SCHULTZ — SITE STYLES
+   NIKO SCHULTZ — SITE STYLES
    Design tokens live at the top. Change colors, type, and spacing here.
    ========================================================================== */
 
@@ -21,9 +23,16 @@
   --accent-pale: #F1E4CE;
   --white: #FFFDF8;
 
-  /* ---- Type ---- */
-  --font-display: 'Fraunces', 'Newsreader', Georgia, serif;
-  --font-body: 'Neue Haas Grotesk', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* ---- Type ----
+     --font-name is the decorative wordmark font used only where Niko's
+     name is the hero of the layout (the big hero heading + footer name).
+     --font-display (Changa One) is the everyday secondary/heading font
+     used for section titles, timeline, sponsor marks, and the modal.
+     Nav logo and body copy stay on legible mono/sans faces on purpose —
+     spray paint lettering at 13px would be unreadable. ---- */
+  --font-name: 'Rubik Spray Paint', 'Changa One', cursive;
+  --font-display: 'Changa One', 'Fraunces', Georgia, serif;
+  --font-body: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
 
   /* ---- Layout ---- */
@@ -72,7 +81,7 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 500; 
 .section-inner, .footer-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 32px; }
 
 /* ==========================================================================
-   LOADER
+   SKELETON LOADER
    ========================================================================== */
 
 #loader {
@@ -92,46 +101,43 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 500; 
   pointer-events: none;
 }
 
-.loader-inner { text-align: center; }
-
-.loader-mark {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  letter-spacing: 0.3em;
-  color: var(--ink);
-  margin: 0 0 18px;
-  animation: loader-pulse 1.6s var(--ease-soft) infinite;
+.skeleton-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  max-width: 420px;
+  padding: 0 32px;
 }
 
-@keyframes loader-pulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
-}
-
-.loader-bar {
-  width: 120px;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--line-strong);
-  overflow: hidden;
+.skeleton {
   position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--cream-3);
 }
 
-.loader-bar span {
+.skeleton::after {
+  content: '';
   position: absolute;
   inset: 0;
-  width: 40%;
-  background: var(--ink);
-  animation: loader-sweep 1.3s var(--ease-soft) infinite;
+  background: linear-gradient(90deg, transparent, rgba(255, 253, 248, 0.65), transparent);
+  transform: translateX(-100%);
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
 }
 
-@keyframes loader-sweep {
-  0% { transform: translateX(-120%); }
-  100% { transform: translateX(340%); }
+@keyframes skeleton-shimmer {
+  100% { transform: translateX(100%); }
 }
+
+.skeleton-eyebrow { width: 130px; height: 10px; }
+.skeleton-title { width: 100%; height: 52px; border-radius: 8px; }
+.skeleton-tagline { width: 70%; height: 14px; }
 
 /* ==========================================================================
-   AMBIENT DOT FIELD (canvas, sits behind everything)
+   AMBIENT DOT FIELD (canvas, sits behind everything, viewport-sized only)
    ========================================================================== */
 
 #dot-field {
@@ -145,7 +151,8 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 500; 
 }
 
 /* ==========================================================================
-   NAV
+   NAV — solid, same tone as the page background, no blur (cheaper to paint
+   and avoids the translucent "floating bar" look).
    ========================================================================== */
 
 .site-nav {
@@ -155,16 +162,13 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 500; 
   right: 0;
   z-index: 100;
   height: var(--nav-h);
-  background: rgba(247, 242, 231, 0.7);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  background: var(--cream-1);
   border-bottom: 1px solid transparent;
-  transition: border-color 0.4s var(--ease), background 0.4s var(--ease), box-shadow 0.4s var(--ease);
+  transition: border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
 }
 
 .site-nav.scrolled {
   border-bottom-color: var(--line);
-  background: rgba(247, 242, 231, 0.88);
   box-shadow: 0 12px 32px -24px rgba(26, 25, 23, 0.35);
 }
 
@@ -301,6 +305,7 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 500; 
   inset: 0;
   z-index: 0;
   overflow: hidden;
+  background: var(--cream-2);
 }
 
 .hero-media img {
@@ -309,8 +314,11 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 500; 
   object-fit: cover;
   object-position: center 30%;
   filter: grayscale(40%) sepia(8%) brightness(1.05);
-  opacity: 0.14;
+  opacity: 0;
+  transition: opacity 0.9s var(--ease);
 }
+
+.hero-media img.loaded { opacity: 0.14; }
 
 .hero-media::after {
   content: '';
@@ -336,19 +344,28 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 500; 
 }
 
 .hero-name {
-  font-size: clamp(2.6rem, 8vw, 6.2rem);
-  line-height: 1.02;
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  font-family: var(--font-name);
+  font-size: clamp(2.4rem, 7.5vw, 5.6rem);
+  line-height: 1.15;
+  font-weight: 400;
+  letter-spacing: 0.01em;
   color: var(--ink);
-  opacity: 0;
-  filter: blur(6px);
-  animation: name-reveal 0.9s var(--ease) 0.35s forwards;
+  min-height: 1.3em;
+  display: inline-flex;
+  align-items: baseline;
 }
 
-@keyframes name-reveal {
-  from { opacity: 0; filter: blur(6px); transform: translateY(10px); }
-  to { opacity: 1; filter: blur(0); transform: translateY(0); }
+.cursor {
+  font-family: var(--font-body);
+  font-weight: 300;
+  color: var(--accent);
+  margin-left: 4px;
+  animation: blink 0.9s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 45% { opacity: 1; }
+  50%, 100% { opacity: 0; }
 }
 
 .hero-tagline {
@@ -359,7 +376,7 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 500; 
   font-style: italic;
   font-family: var(--font-display);
   opacity: 0;
-  animation: fade-up 0.8s var(--ease) 0.85s forwards;
+  animation: fade-up 0.8s var(--ease) 2s forwards;
 }
 
 .scroll-cue {
@@ -369,7 +386,7 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 500; 
   gap: 10px;
   margin-top: 64px;
   opacity: 0;
-  animation: fade-up 0.8s var(--ease) 1.25s forwards;
+  animation: fade-up 0.8s var(--ease) 2.4s forwards;
 }
 
 .scroll-cue-line {
@@ -387,7 +404,7 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 500; 
   width: 100%;
   height: 100%;
   background: var(--ink);
-  animation: scroll-drip 2s var(--ease-soft) infinite;
+  animation: scroll-drip 2.6s var(--ease-soft) infinite;
 }
 @keyframes scroll-drip {
   0% { top: -100%; }
@@ -476,36 +493,72 @@ section { position: relative; z-index: 1; }
 }
 
 /* ==========================================================================
-   PRs
+   PRs — restyled: colored top bar + icon badge per event, bigger mark,
+   corner watermark for texture.
    ========================================================================== */
 
 .pr-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  max-width: 720px;
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  max-width: 760px;
+  gap: 18px;
 }
 
 .pr-card {
+  position: relative;
   background: var(--white);
   border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 36px 30px;
+  border-top: 3px solid var(--pr-color, var(--accent));
+  border-radius: 14px;
+  padding: 34px 30px;
+  overflow: hidden;
   transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease), border-color 0.35s var(--ease);
   opacity: 0;
   transform: translateY(18px);
 }
 
+.pr-card::after {
+  content: '';
+  position: absolute;
+  right: -30px;
+  bottom: -30px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--pr-color, var(--accent));
+  opacity: 0.06;
+}
+
 .pr-card.in-view {
-  animation: fade-up 0.65s var(--ease) forwards;
-  animation-delay: calc(var(--i) * 110ms);
+  animation: fade-up 0.7s var(--ease) forwards;
+  animation-delay: calc(var(--i) * 140ms);
 }
 
 .pr-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
   border-color: var(--line-strong);
-  box-shadow: 0 20px 36px -24px rgba(26, 25, 23, 0.22);
+  box-shadow: 0 22px 40px -24px rgba(26, 25, 23, 0.24);
 }
+
+.pr-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.pr-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--pr-color, var(--accent));
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.pr-icon svg { width: 16px; height: 16px; }
 
 .pr-event {
   font-family: var(--font-mono);
@@ -513,33 +566,20 @@ section { position: relative; z-index: 1; }
   letter-spacing: 0.14em;
   color: var(--stone);
   text-transform: uppercase;
-  margin-bottom: 14px;
 }
 
 .pr-mark {
+  position: relative;
   font-family: var(--font-mono);
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
-  font-weight: 600;
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-weight: 700;
   color: var(--ink);
   letter-spacing: -0.01em;
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-}
-
-.pr-mark::after {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  margin-left: 4px;
-  transform: translateY(-10px);
 }
 
 .pr-meta {
-  margin-top: 10px;
+  position: relative;
+  margin-top: 12px;
   font-size: 12.5px;
   color: var(--stone);
 }
@@ -565,8 +605,8 @@ section { position: relative; z-index: 1; }
 }
 
 .achievement-card.in-view {
-  animation: fade-up 0.65s var(--ease) forwards;
-  animation-delay: calc(var(--i) * 90ms);
+  animation: fade-up 0.7s var(--ease) forwards;
+  animation-delay: calc(var(--i) * 110ms);
 }
 
 .achievement-card:hover {
@@ -611,7 +651,7 @@ section { position: relative; z-index: 1; }
 }
 
 /* ==========================================================================
-   SPONSORS — sliding carousel
+   SPONSORS — sliding carousel (slowed down for a calmer, less jittery feel)
    ========================================================================== */
 
 .sponsor-carousel {
@@ -627,7 +667,8 @@ section { position: relative; z-index: 1; }
   display: flex;
   gap: 20px;
   width: max-content;
-  animation: sponsor-scroll 34s linear infinite;
+  animation: sponsor-scroll 70s linear infinite;
+  will-change: transform;
 }
 
 .sponsor-carousel:hover .sponsor-track {
@@ -687,7 +728,8 @@ section { position: relative; z-index: 1; }
 }
 
 /* ==========================================================================
-   GALLERY
+   GALLERY — images fade in once actually loaded instead of popping in
+   white/blank.
    ========================================================================== */
 
 .gallery-grid {
@@ -709,8 +751,8 @@ section { position: relative; z-index: 1; }
 }
 
 .gallery-item.in-view {
-  animation: fade-up 0.65s var(--ease) forwards;
-  animation-delay: calc(var(--i) * 100ms);
+  animation: fade-up 0.7s var(--ease) forwards;
+  animation-delay: calc(var(--i) * 120ms);
 }
 
 .gallery-item img {
@@ -718,9 +760,11 @@ section { position: relative; z-index: 1; }
   height: 100%;
   object-fit: cover;
   filter: grayscale(12%) saturate(105%);
-  transition: transform 0.6s var(--ease);
+  opacity: 0;
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
 }
 
+.gallery-item img.loaded { opacity: 1; }
 .gallery-item:hover img { transform: scale(1.06); }
 
 .gallery-item figcaption {
@@ -781,7 +825,7 @@ section { position: relative; z-index: 1; }
   position: relative;
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
 }
 
 .timeline-item.in-view {
@@ -859,9 +903,10 @@ section { position: relative; z-index: 1; }
 }
 
 .footer-name {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  margin: 0 0 6px;
+  font-family: var(--font-name);
+  font-weight: 400;
+  font-size: 1.9rem;
+  margin: 0 0 8px;
   color: var(--ink);
 }
 
