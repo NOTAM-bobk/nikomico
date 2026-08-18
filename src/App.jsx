@@ -14,7 +14,14 @@ const CONFIG = {
   // Drop matching files into /public/images to bring these to life.
   images: {
     hero: '/images/hero-action.jpg',
+    avatar: '/images/avatar.png',
   },
+
+  // Follower counts shown in the stats strip below the hero.
+  followerStats: [
+    { platform: 'YouTube', icon: 'youtube', count: '12.4K' },
+    { platform: 'Instagram', icon: 'instagram', count: '8.9K' },
+  ],
 
   // Top nav quick links (in-page anchors or external URLs)
   nav: [
@@ -63,7 +70,9 @@ const CONFIG = {
     { name: 'NorthWind Co.', tier: 'Local Sponsor', initials: 'NW', color: '#556270' },
   ],
 
-  // Race-day gallery — drop matching files into /public/images
+  // Race-day photos — drop matching files into /public/images.
+  // No longer shown as a standalone gallery section; instead these are
+  // scattered through the site as small image chips next to section titles.
   gallery: [
     { src: '/images/gallery-1.jpg', caption: 'Kicking for the line — Sectional Championships' },
     { src: '/images/gallery-2.jpg', caption: 'Pre-race warmup — Regional Championships' },
@@ -130,6 +139,18 @@ function Icon({ name }) {
   return <span className="icon" dangerouslySetInnerHTML={{ __html: ICONS[name] || ICONS.email }} />
 }
 
+/* Small race-day photo box, scattered next to section titles throughout
+   the site. `index` picks from CONFIG.gallery, wrapping around. */
+function GalleryChip({ index }) {
+  const shot = CONFIG.gallery[index % CONFIG.gallery.length]
+  if (!shot) return null
+  return (
+    <span className="image-chip">
+      <img src={shot.src} alt={shot.caption} loading="lazy" onLoad={handleImgLoad} />
+    </span>
+  )
+}
+
 /* ==========================================================================
    Reusable scroll-reveal hook — observes a list of refs and tracks which
    indices have entered the viewport. Used by the records, achievements,
@@ -172,6 +193,7 @@ function handleImgLoad(e) {
 export default function App() {
   const [loaderHidden, setLoaderHidden] = useState(false)
   const [typedName, setTypedName] = useState('')
+  const [typingDone, setTypingDone] = useState(false)
   const [navScrolled, setNavScrolled] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -187,7 +209,6 @@ export default function App() {
 
   const prReveal = useSectionReveal()
   const achievementReveal = useSectionReveal()
-  const galleryReveal = useSectionReveal()
 
   /* ---- Loader ---- */
   useEffect(() => {
@@ -206,6 +227,9 @@ export default function App() {
         setTypedName(text.slice(0, i))
         i++
         timer = setTimeout(tick, 70 + Math.random() * 55)
+      } else {
+        // Typing finished — let the cursor fade out instead of blinking forever.
+        setTypingDone(true)
       }
     }
     tick()
@@ -427,7 +451,9 @@ export default function App() {
         className={`site-nav ${navScrolled ? 'scrolled' : ''} ${menuOpen ? 'menu-open' : ''}`}
       >
         <div className="nav-inner">
-          <a href="#top" className="nav-logo">N. SCHULTZ</a>
+          <a href="#top" className="nav-logo" aria-label={CONFIG.name}>
+            <img src={CONFIG.images.avatar} alt={CONFIG.name} className="nav-avatar" />
+          </a>
 
           <nav className="nav-links" id="nav-links" aria-label="Page sections" onClick={closeMenuIfLink}>
             {CONFIG.nav.map((item) => (
@@ -468,13 +494,28 @@ export default function App() {
             <p className="hero-eyebrow">TRACK &amp; FIELD</p>
             <h1 className="hero-name" aria-label={CONFIG.name}>
               <span>{typedName}</span>
-              <span className="cursor" aria-hidden="true">|</span>
+              <span className={`cursor ${typingDone ? 'cursor-done' : ''}`} aria-hidden="true">|</span>
             </h1>
             <p className="hero-tagline">{CONFIG.tagline}</p>
             <a href="#journey" className="scroll-cue" aria-label="Scroll to explore">
               <span className="scroll-cue-line"></span>
               <span className="scroll-cue-text">SCROLL</span>
             </a>
+          </div>
+        </section>
+
+        {/* ============ FOLLOWER STATS ============ */}
+        <section className="follower-stats" aria-label="Follower counts">
+          <div className="follower-stats-inner">
+            {CONFIG.followerStats.map((f) => (
+              <div key={f.platform} className="follower-stat">
+                <span className="follower-icon"><Icon name={f.icon} /></span>
+                <div>
+                  <p className="follower-count">{f.count}</p>
+                  <p className="follower-label">{f.platform} Followers</p>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -493,23 +534,24 @@ export default function App() {
         {/* ============ PRs ============ */}
         <section className="prs" id="prs">
           <div className="section-inner">
-            <p className="section-eyebrow">01 — BY THE NUMBERS</p>
-            <h2 className="section-title">Personal Records</h2>
-            <p className="section-sub">Two events, one focus.</p>
+            <div className="section-head">
+              <div>
+                <h2 className="section-title">Personal Records</h2>
+                <p className="section-sub">Two events, one focus.</p>
+              </div>
+              <GalleryChip index={0} />
+            </div>
 
-            <div className="pr-grid">
+            <div className="pr-list">
               {CONFIG.prs.map((pr, idx) => (
                 <div
                   key={pr.event}
                   ref={(el) => (prReveal.refs.current[idx] = el)}
                   data-idx={idx}
                   style={{ '--i': idx, '--pr-color': pr.color }}
-                  className={`pr-card ${prReveal.visible.has(idx) ? 'in-view' : ''}`}
+                  className={`pr-row ${prReveal.visible.has(idx) ? 'in-view' : ''}`}
                 >
-                  <div className="pr-card-top">
-                    <span className="pr-icon"><Icon name="stopwatch" /></span>
-                    <p className="pr-event">{pr.event}</p>
-                  </div>
+                  <p className="pr-event">{pr.event}</p>
                   <p className="pr-mark">{pr.mark}</p>
                   <p className="pr-meta">{pr.meta}</p>
                 </div>
@@ -521,20 +563,23 @@ export default function App() {
         {/* ============ ACHIEVEMENTS ============ */}
         <section className="achievements" id="achievements">
           <div className="section-inner">
-            <p className="section-eyebrow">02 — HONORS &amp; RESULTS</p>
-            <h2 className="section-title">Achievements</h2>
-            <p className="section-sub">Results that back up the times.</p>
+            <div className="section-head">
+              <div>
+                <h2 className="section-title">Achievements</h2>
+                <p className="section-sub">Results that back up the times.</p>
+              </div>
+              <GalleryChip index={1} />
+            </div>
 
-            <div className="achievements-grid">
+            <div className="achievements-list">
               {CONFIG.achievements.map((a, idx) => (
                 <div
                   key={a.title}
                   ref={(el) => (achievementReveal.refs.current[idx] = el)}
                   data-idx={idx}
                   style={{ '--i': idx }}
-                  className={`achievement-card ${achievementReveal.visible.has(idx) ? 'in-view' : ''}`}
+                  className={`achievement-row ${achievementReveal.visible.has(idx) ? 'in-view' : ''}`}
                 >
-                  <span className="achievement-icon"><Icon name="medal" /></span>
                   <p className="achievement-meta">{a.meta}</p>
                   <h3 className="achievement-title">{a.title}</h3>
                   <p className="achievement-detail">{a.detail}</p>
@@ -547,53 +592,37 @@ export default function App() {
         {/* ============ SPONSORS ============ */}
         <section className="sponsors" id="sponsors">
           <div className="section-inner">
-            <p className="section-eyebrow">03 — BACKED BY</p>
-            <h2 className="section-title">Sponsors &amp; Partners</h2>
-            <p className="section-sub">The brands behind every mile.</p>
+            <div className="section-head">
+              <div>
+                <h2 className="section-title">Sponsors &amp; Partners</h2>
+                <p className="section-sub">The brands behind every mile.</p>
+              </div>
+              <GalleryChip index={2} />
+            </div>
           </div>
 
           <div className="sponsor-carousel">
             <div className="sponsor-track">
               {sponsorTrack.map((s, idx) => (
-                <div key={idx} className="sponsor-card" style={{ '--sponsor-color': s.color }}>
-                  <div className="sponsor-mark">{s.initials}</div>
+                <div key={idx} className="sponsor-item">
+                  <span className="sponsor-logo" style={{ background: s.color }}>{s.initials}</span>
                   <p className="sponsor-name">{s.name}</p>
-                  <p className="sponsor-tier">{s.tier}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ============ GALLERY ============ */}
-        <section className="gallery" id="gallery">
-          <div className="section-inner">
-            <p className="section-eyebrow">04 — ON THE LINE</p>
-            <h2 className="section-title">Race Day</h2>
-          </div>
-
-          <div className="gallery-grid section-inner">
-            {CONFIG.gallery.map((g, idx) => (
-              <figure
-                key={g.src}
-                ref={(el) => (galleryReveal.refs.current[idx] = el)}
-                data-idx={idx}
-                style={{ '--i': idx }}
-                className={`gallery-item ${galleryReveal.visible.has(idx) ? 'in-view' : ''}`}
-              >
-                <img src={g.src} alt={g.caption} loading="lazy" onLoad={handleImgLoad} />
-                <figcaption>{g.caption}</figcaption>
-              </figure>
-            ))}
-          </div>
-        </section>
-
         {/* ============ JOURNEY / TIMELINE ============ */}
         <section className="journey" id="journey">
           <div className="section-inner">
-            <p className="section-eyebrow">05 — THE JOURNEY</p>
-            <h2 className="section-title">Middle School to Now</h2>
-            <p className="section-sub">Every season builds on the last.</p>
+            <div className="section-head">
+              <div>
+                <h2 className="section-title">Middle School to Now</h2>
+                <p className="section-sub">Every season builds on the last.</p>
+              </div>
+              <GalleryChip index={0} />
+            </div>
           </div>
 
           <div className="timeline-wrap" ref={timelineWrapRef}>
