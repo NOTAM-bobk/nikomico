@@ -654,6 +654,26 @@ section { position: relative; z-index: 1; }
 .image-chip::before { left: 3px; border-width: 1.5px 0 0 1.5px; }
 .image-chip::after { right: 3px; border-width: 1.5px 1.5px 0 0; }
 
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  margin: 0 0 16px;
+}
+
+.section-eyebrow::before {
+  content: '';
+  width: 18px;
+  height: 1.5px;
+  background: var(--accent);
+}
+
 .section-title {
   font-size: clamp(1.9rem, 4vw, 2.9rem);
   color: var(--ink);
@@ -668,53 +688,93 @@ section { position: relative; z-index: 1; }
 }
 
 /* ==========================================================================
-   PRs — no cards, just line-separated rows.
+   PRs — two hand-tended cards, each with a colored top bar and a
+   countdown-style mark that settles into place on scroll.
    ========================================================================== */
 
-.pr-list {
+.pr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
   max-width: 760px;
   margin-top: 44px;
-  border-top: 1px solid var(--line);
 }
 
-.pr-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 14px 28px;
-  padding: 26px 0;
-  border-bottom: 1px solid var(--line);
+.pr-card {
+  position: relative;
+  padding: 30px 28px 26px;
+  border-radius: 16px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 1px rgba(26,25,23,0.04), 0 20px 40px -30px rgba(26,25,23,0.35);
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(18px);
+  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
 }
 
-.pr-row.in-view {
+.pr-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 4px;
+  border-radius: 0 0 3px 3px;
+  background: var(--pr-color, var(--accent));
+}
+
+.pr-card.in-view {
   animation: fade-up 0.7s var(--ease) forwards;
   animation-delay: calc(var(--i) * 130ms);
 }
 
+.pr-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 1px 1px rgba(26,25,23,0.05), 0 26px 48px -28px rgba(26,25,23,0.4);
+}
+
+.pr-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.pr-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--pr-color, var(--accent)) 16%, var(--cream-1));
+  color: var(--pr-color, var(--accent-ink));
+}
+.pr-icon svg { width: 15px; height: 15px; }
+
 .pr-event {
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   color: var(--stone);
   text-transform: uppercase;
-  width: 140px;
-  flex-shrink: 0;
 }
 
 .pr-mark {
   font-family: var(--font-mono);
-  font-size: clamp(1.6rem, 3.2vw, 2.2rem);
+  font-size: clamp(2rem, 4.4vw, 2.7rem);
   font-weight: 700;
   color: var(--pr-color, var(--ink));
   letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  margin: 0 0 10px;
 }
 
 .pr-meta {
   font-size: 12.5px;
   color: var(--stone);
-  margin-left: auto;
+  margin: 0;
 }
 
 /* ==========================================================================
