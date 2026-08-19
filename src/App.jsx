@@ -9,19 +9,12 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 const CONFIG = {
 
   name: 'Niko Schultz',
-  tagline: 'Future Olympian, Future Entrepreneur, Future 1 Million Followers',
+  tagline: '800m specialist. Indoor and outdoor. Still chasing state.',
 
   // Drop matching files into /public/images to bring these to life.
   images: {
     hero: '/images/hero-action.jpg',
-    avatar: '/images/avatar.png',
   },
-
-  // Follower counts shown in the stats strip below the hero.
-  followerStats: [
-    { platform: 'YouTube', icon: 'youtube', count: '22.1k' },
-    { platform: 'Instagram', icon: 'instagram', count: '27.4' },
-  ],
 
   // Top nav quick links (in-page anchors or external URLs)
   nav: [
@@ -36,150 +29,94 @@ const CONFIG = {
   // Social links — used in the nav bar AND the social strip.
   // icon options: instagram, twitter, tiktok, strava, youtube, linkedin, email
   socials: [
-  { platform: 'Instagram', icon: 'instagram', url: 'https://instagram.com/nikoschultzzz' },
-  { platform: 'YouTube', icon: 'youtube', url: 'https://youtube.com/@nikoschultz' },
-  { platform: 'Twitter/X', icon: 'twitter', url: '' }, // Add verified handle when available
-  { platform: 'Strava', icon: 'strava', url: '' }, // Add verified profile when available
-  { platform: 'TikTok', icon: 'tiktok', url: 'https://tiktok.com/@nikojschultz' },
-],
+    { platform: 'Instagram', icon: 'instagram', url: 'https://instagram.com/' },
+    { platform: 'YouTube', icon: 'youtube', url: 'https://youtube.com/' },
+    { platform: 'Twitter/X', icon: 'twitter', url: 'https://twitter.com/' },
+    { platform: 'Strava', icon: 'strava', url: 'https://strava.com/' },
+    { platform: 'TikTok', icon: 'tiktok', url: 'https://tiktok.com/' },
+  ],
 
-// Personal Records — 800m only, indoor and outdoor.
-// `color` tints that card's top bar, icon, and hover glow.
-prs: [
-  {
-    event: '800m Indoor',
-    mark: '1:46.67',
-    meta: 'PSU Sykes & Sabock Challenge — Feb. 7, 2026',
-    color: '#B7742F',
-  },
-  {
-    event: '800m Outdoor',
-    mark: '1:45.50',
-    meta: 'NCAA Division I Outdoor Championships — June 12, 2026',
-    color: '#3E6B72',
-  },
-],
+  // Follower stats — shown in the counter strip below the hero.
+  // `icon` reuses the icon library above.
+  followers: [
+    { icon: 'instagram', label: 'Instagram Followers', count: 12480 },
+    { icon: 'youtube', label: 'YouTube Subscribers', count: 3260 },
+    { icon: 'strava', label: 'Strava Followers', count: 5940 },
+    { icon: 'tiktok', label: 'TikTok Followers', count: 8720 },
+  ],
 
-// Achievements — wins, medals, and honors
-achievements: [
-  {
-    title: 'First-Team All-American, 800m',
-    meta: 'NCAA Division I Outdoor Championships — 2026',
-    detail: 'Finished sixth in the NCAA outdoor 800m final in 1:45.50 in Eugene, Oregon.',
-  },
-  {
-    title: 'NCAA Outdoor 800m Finalist',
-    meta: 'Eugene, Oregon — 2026',
-    detail: 'Qualified for the NCAA final after running 1:45.47 in the semifinal round.',
-  },
-  {
-    title: 'Bronze Medal, 800m',
-    meta: 'Big Ten Outdoor Championships — 2026',
-    detail: 'Earned third place in the men’s 800m, clocking 1:47.70 for Penn State.',
-  },
-  {
-    title: 'Second-Team All-American, 800m',
-    meta: 'NCAA Division I Indoor Championships — 2026',
-    detail: 'Competed in the NCAA indoor 800m championship round for Penn State.',
-  },
-  {
-    title: 'Academic All-Big Ten',
-    meta: '2023, 2024 & 2025',
-    detail: 'Recognized for academic achievement during his time at the University of Nebraska.',
-  },
-  {
-    title: 'USTFCCCA All-Academic',
-    meta: '2023',
-    detail: 'Earned national academic recognition as a student-athlete at Nebraska.',
-  },
-],
+  // Personal Records — 800m only, indoor and outdoor.
+  // `color` tints that card's top bar, icon, and hover glow.
+  prs: [
+    { event: '800m Indoor', mark: '1:53.02', meta: 'Conference Indoor Championships — Feb 2026', color: '#B7742F' },
+    { event: '800m Outdoor', mark: '1:52.14', meta: 'Sectional Championships — May 2026', color: '#3E6B72' },
+  ],
 
-// Sponsors — shown in the sliding carousel.
-// color accepts any CSS color; it sets the card's top bar + logo mark.
-// No verified personal sponsors should be displayed until approved by Niko.
-sponsors: [
-  {
-    name: 'Bicarb 3.0',
-    tier: 'Performance Nutrition Partner',
-    initials: 'B3',
-    color: '#7A9E7E',
-    url: 'https://www.bicarb.shop/',
-    detail: 'Official Bicarb 3.0 athlete. Use code “NIKO” for 10% off.',
-  },
-  {
-    name: 'Andersen Endurance Sports Management',
-    tier: 'Athlete Representation',
-    initials: 'AE',
-    color: '#0B3A53',
-    url: 'https://www.instagram.com/andersenendurance/',
-    detail: 'Professional athlete representation and career management.',
-  },
-  {
-    name: 'Erly App',
-    tier: 'Training Technology Partner',
-    initials: 'ER',
-    color: '#B7742F',
-    url: '', // Add Erly’s approved website or campaign link
-    detail: 'Training, recovery, and performance support.',
-  },
-],
+  // Achievements — wins, medals, and honors
+  achievements: [
+    { title: '1st Place, 800m', meta: 'Sectional Championships — 2026', detail: 'Broke away with 200m to go to take the section title in a personal-best time.' },
+    { title: '2nd Place, 800m Indoor', meta: 'Conference Indoor Championships — 2026', detail: 'Ran down the leader on the final straight, finishing a stride short of the win.' },
+    { title: 'All-Conference, Indoor Track', meta: 'Winter 2026', detail: 'Named to the all-conference team after a season of consistent top-three finishes.' },
+    { title: '3rd Place, 800m', meta: 'Regional Championships — 2025', detail: 'Held off a five-way pack in the final 100m to medal at regionals as a junior.' },
+    { title: 'Team MVP, Track & Field', meta: 'Roosevelt High School — 2025', detail: 'Voted team MVP by coaches and teammates for the outdoor season.' },
+    { title: 'Academic All-Conference', meta: '2025 — 2026', detail: 'Recognized for maintaining conference honor-roll standards across both seasons.' },
+  ],
 
-// Race-day photos — drop matching files into /public/images.
-// No longer shown as a standalone gallery section; instead these are
-// scattered through the site as small image chips next to section titles.
-gallery: [
-  {
-    src: '/images/gallery-1.jpg',
-    caption: 'NCAA Outdoor Championships — Eugene, Oregon',
-  },
-  {
-    src: '/images/gallery-2.jpg',
-    caption: 'Penn State 800m competition',
-  },
-  {
-    src: '/images/gallery-3.jpg',
-    caption: 'Race-day preparation',
-  },
-],
+  // Sponsors — shown in the sliding carousel.
+  // color accepts any CSS color; it sets the card's top bar + logo mark.
+  sponsors: [
+    { name: 'BiCarb', tier: 'Nutrition Partner', initials: 'BC', color: '#7A9E7E' },
+    { name: 'Eddie Bauer', tier: 'Apparel Partner', initials: 'EB', color: '#3E5C76' },
+    { name: 'TrailForge', tier: 'Gear Sponsor', initials: 'TF', color: '#B7742F' },
+    { name: 'PaceLab', tier: 'Training Partner', initials: 'PL', color: '#9A5A44' },
+    { name: 'NorthWind Co.', tier: 'Local Sponsor', initials: 'NW', color: '#556270' },
+  ],
 
-// Journey timeline — order matters, earliest first
-timeline: [
-  {
-    year: '2017 — 2021',
-    title: 'High School Career',
-    org: 'Plainfield South High School',
-    desc: 'Developed as a middle-distance athlete in Plainfield, Illinois. A three-time state qualifier, sectional champion, and conference champion, Schultz also set the Illinois state 600m record at 1:19.86.',
-  },
-  {
-    year: '2021 — 2025',
-    title: 'Nebraska Track & Field',
-    org: 'University of Nebraska–Lincoln',
-    desc: 'Competed for Nebraska while earning a degree in Business Marketing with a minor in Entrepreneurship. Became an Academic All-Big Ten honoree and USTFCCCA All-Academic selection.',
-  },
-  {
-    year: '2025 — 2026',
-    title: 'Penn State Breakthrough',
-    org: 'Penn State Track & Field',
-    desc: 'Transferred to Penn State and posted a breakthrough senior season, including a 1:46.67 indoor 800m and a 1:45.50 outdoor 800m.',
-  },
-  {
-    year: '2026 — Present',
-    title: 'NCAA All-American',
-    org: 'Penn State / Puerto Rico Eligible',
-    desc: 'Finished sixth in the NCAA Division I Outdoor 800m final to earn First-Team All-American honors. Continues to compete in the 800m while building a platform as an athlete and creator.',
-  },
-],
+  // Race-day gallery — drop matching files into /public/images
+  gallery: [
+    { src: '/images/gallery-1.jpg', caption: 'Kicking for the line — Sectional Championships' },
+    { src: '/images/gallery-2.jpg', caption: 'Pre-race warmup — Regional Championships' },
+    { src: '/images/gallery-3.jpg', caption: 'Podium finish — Conference Indoor' },
+  ],
 
-// Footer links
-footerLinks: [
-  { label: 'Records', href: '#prs' },
-  { label: 'Achievements', href: '#achievements' },
-  { label: 'Sponsors', href: '#sponsors' },
-  { label: 'Journey', href: '#journey' },
-],
+  // Journey timeline — order matters, earliest first
+  timeline: [
+    {
+      year: '2019 — 2021',
+      title: 'Middle School Track',
+      org: 'Lincoln Middle School',
+      desc: 'First laps on a real track. Ran junior varsity distance events and found out running could be more than a gym-class mile.',
+    },
+    {
+      year: '2021 — 2023',
+      title: 'Freshman & JV Years',
+      org: 'Roosevelt High School',
+      desc: 'Moved up to the high school program. Cut his mile time by nearly a minute across two seasons of varsity-adjacent racing.',
+    },
+    {
+      year: '2023 — 2025',
+      title: 'Varsity Breakthrough',
+      org: 'Roosevelt High School',
+      desc: 'Earned a varsity spot, qualified for regionals in cross country, and set five personal records in a single outdoor season.',
+    },
+    {
+      year: '2025 — Present',
+      title: 'Chasing State, Chasing More',
+      org: 'Roosevelt High School / Independent Training',
+      desc: 'Training for a state qualifying mark in the 800m, picking up local sponsors along the way, and building toward the next level.',
+    },
+  ],
 
-gofundme: '',
-contact: 'mailto:contact@nikoschultz.com', // Replace with Niko's approved contact email
+  // Footer links
+  footerLinks: [
+    { label: 'Records', href: '#prs' },
+    { label: 'Achievements', href: '#achievements' },
+    { label: 'Sponsors', href: '#sponsors' },
+    { label: 'Journey', href: '#journey' },
+  ],
+
+  gofundme: 'https://gofundme.com/',
+  contact: 'mailto:developer@example.com',
 }
 
 /* ==========================================================================
@@ -200,18 +137,6 @@ const ICONS = {
 
 function Icon({ name }) {
   return <span className="icon" dangerouslySetInnerHTML={{ __html: ICONS[name] || ICONS.email }} />
-}
-
-/* Small race-day photo box, scattered next to section titles throughout
-   the site. `index` picks from CONFIG.gallery, wrapping around. */
-function GalleryChip({ index }) {
-  const shot = CONFIG.gallery[index % CONFIG.gallery.length]
-  if (!shot) return null
-  return (
-    <span className="image-chip">
-      <img src={shot.src} alt={shot.caption} loading="lazy" onLoad={handleImgLoad} />
-    </span>
-  )
 }
 
 /* ==========================================================================
@@ -243,10 +168,119 @@ function useSectionReveal() {
   return { refs, visible }
 }
 
+/* Fires once when the given element first enters the viewport, and stays
+   true afterward — used to trigger the follower counters a single time. */
+function useInView(ref, options) {
+  const [inView, setInView] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setInView(true)
+        })
+      },
+      options || { threshold: 0.35 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [ref, options])
+  return inView
+}
+
 /* Fades an <img> in once it has actually loaded, instead of showing a
    blank/white box while the file is missing or still downloading. */
 function handleImgLoad(e) {
   e.currentTarget.classList.add('loaded')
+}
+
+/* ==========================================================================
+   COUNT-UP / COUNT-DOWN — animates a number from a start value to a target
+   value, decelerating as it approaches the target (ease-out cubic), and
+   only starts once `active` flips true (driven by scroll-into-view).
+   Returns the current numeric value each render.
+   ========================================================================== */
+
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3)
+}
+
+function useCountAnimation(target, { active, from, duration = 1800 } = {}) {
+  const [value, setValue] = useState(from ?? 0)
+  const startedRef = useRef(false)
+
+  useEffect(() => {
+    if (!active || startedRef.current) return
+    startedRef.current = true
+
+    const startValue = from ?? 0
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reducedMotion) {
+      setValue(target)
+      return
+    }
+
+    let rafId
+    const t0 = performance.now()
+
+    function tick(now) {
+      const elapsed = now - t0
+      const progress = Math.min(1, elapsed / duration)
+      const eased = easeOutCubic(progress)
+      setValue(startValue + (target - startValue) * eased)
+      if (progress < 1) {
+        rafId = requestAnimationFrame(tick)
+      } else {
+        setValue(target)
+      }
+    }
+    rafId = requestAnimationFrame(tick)
+    return () => rafId && cancelAnimationFrame(rafId)
+  }, [active, target, from, duration])
+
+  return value
+}
+
+/* Parses a race mark like "1:53.02" into total seconds (113.02), and
+   formats total seconds back into the same "m:ss.xx" shape. */
+function markToSeconds(mark) {
+  const [min, rest] = mark.split(':')
+  return Number(min) * 60 + Number(rest)
+}
+
+function secondsToMark(totalSeconds) {
+  const clamped = Math.max(0, totalSeconds)
+  const min = Math.floor(clamped / 60)
+  const secs = (clamped - min * 60).toFixed(2).padStart(5, '0')
+  return `${min}:${secs}`
+}
+
+/* Counts down from a padded starting mark toward the real PR, slowing as
+   it nears the final number — feels like a stopwatch settling. */
+function AnimatedPrMark({ mark, active }) {
+  const target = markToSeconds(mark)
+  const startValue = target + 3.5 + Math.random() * 2.5
+  const current = useCountAnimation(target, { active, from: startValue, duration: 2200 })
+  return <p className="pr-mark">{secondsToMark(current)}</p>
+}
+
+/* Counts up from zero, slowing as it approaches the real follower count. */
+function AnimatedFollowerCount({ count, active }) {
+  const current = useCountAnimation(count, { active, from: 0, duration: 1900 })
+  return <p className="follower-count">{Math.round(current).toLocaleString()}</p>
+}
+
+/* Small hand-drawn squiggle used as a section divider — a single wobbly
+   stroke rather than a hairline, so it reads as sketched, not ruled. */
+function Divider({ flip }) {
+  return (
+    <div className={`section-divider ${flip ? 'section-divider-flip' : ''}`} aria-hidden="true">
+      <svg viewBox="0 0 300 24" preserveAspectRatio="none">
+        <path d="M2,14 C 30,4 45,22 72,12 C 100,2 115,20 145,11 C 172,3 188,21 216,12 C 244,3 260,19 298,10" />
+      </svg>
+    </div>
+  )
 }
 
 /* ==========================================================================
@@ -256,7 +290,6 @@ function handleImgLoad(e) {
 export default function App() {
   const [loaderHidden, setLoaderHidden] = useState(false)
   const [typedName, setTypedName] = useState('')
-  const [typingDone, setTypingDone] = useState(false)
   const [navScrolled, setNavScrolled] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -272,6 +305,25 @@ export default function App() {
 
   const prReveal = useSectionReveal()
   const achievementReveal = useSectionReveal()
+  const galleryReveal = useSectionReveal()
+
+  const followerStatsRef = useRef(null)
+  const followersInView = useInView(followerStatsRef, { threshold: 0.35 })
+
+  // Target dot-field brightness per section — read by the canvas draw
+  // loop below so the ambient background brightens/dims as you scroll
+  // from section to section, instead of pulsing at one flat level.
+  const dotIntensityRef = useRef(1)
+  const sectionIntensity = {
+    home: 0.75,
+    'follower-stats': 1.25,
+    prs: 1.15,
+    achievements: 0.85,
+    sponsors: 1.3,
+    gallery: 0.95,
+    journey: 1.1,
+    contact: 0.7,
+  }
 
   /* ---- Loader ---- */
   useEffect(() => {
@@ -290,9 +342,6 @@ export default function App() {
         setTypedName(text.slice(0, i))
         i++
         timer = setTimeout(tick, 70 + Math.random() * 55)
-      } else {
-        // Typing finished — let the cursor fade out instead of blinking forever.
-        setTypingDone(true)
       }
     }
     tick()
@@ -339,6 +388,7 @@ export default function App() {
     let w, h
     let rafId
     let lastDraw = 0
+    let currentIntensity = 1
 
     function buildDots() {
       dots = []
@@ -371,9 +421,12 @@ export default function App() {
         lastDraw = t
         ctx.clearRect(0, 0, w, h)
         const time = t * 0.001
+        // Ease current brightness toward whatever section is active so
+        // transitions feel like a slow fade, not a snap.
+        currentIntensity += (dotIntensityRef.current - currentIntensity) * 0.04
         for (const d of dots) {
           const pulse = (Math.sin(time * d.speed + d.phase) + 1) / 2
-          ctx.globalAlpha = 0.16 + pulse * 0.38
+          ctx.globalAlpha = (0.16 + pulse * 0.38) * currentIntensity
           ctx.fillStyle = d.baseColor
           ctx.beginPath()
           ctx.arc(d.x, d.y, d.radius * dpr, 0, Math.PI * 2)
@@ -404,6 +457,28 @@ export default function App() {
       clearTimeout(resizeTimer)
       if (rafId) cancelAnimationFrame(rafId)
     }
+  }, [])
+
+  /* ---- Ambient dot field: brighten/dim based on the section currently
+     in view, so the background feels alive as you move through the page
+     instead of pulsing at one constant level everywhere. ---- */
+  useEffect(() => {
+    const sections = Array.from(document.querySelectorAll('[data-dot-zone]'))
+    if (!sections.length) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.4) {
+            const key = entry.target.dataset.dotZone
+            dotIntensityRef.current = sectionIntensity[key] ?? 1
+          }
+        })
+      },
+      { threshold: [0.4, 0.6, 0.8] }
+    )
+    sections.forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   /* ---- Scroll reveal: timeline items ---- */
@@ -514,9 +589,7 @@ export default function App() {
         className={`site-nav ${navScrolled ? 'scrolled' : ''} ${menuOpen ? 'menu-open' : ''}`}
       >
         <div className="nav-inner">
-          <a href="#top" className="nav-logo" aria-label={CONFIG.name}>
-            <img src={CONFIG.images.avatar} alt={CONFIG.name} className="nav-avatar" />
-          </a>
+          <a href="#top" className="nav-logo">N. SCHULTZ</a>
 
           <nav className="nav-links" id="nav-links" aria-label="Page sections" onClick={closeMenuIfLink}>
             {CONFIG.nav.map((item) => (
@@ -549,7 +622,7 @@ export default function App() {
       <main id="top">
 
         {/* ============ HERO ============ */}
-        <section className="hero" id="home">
+        <section className="hero" id="home" data-dot-zone="home">
           <div className="hero-media" aria-hidden="true">
             <img src={CONFIG.images.hero} alt="" loading="eager" onLoad={handleImgLoad} />
           </div>
@@ -557,7 +630,7 @@ export default function App() {
             <p className="hero-eyebrow">TRACK &amp; FIELD</p>
             <h1 className="hero-name" aria-label={CONFIG.name}>
               <span>{typedName}</span>
-              <span className={`cursor ${typingDone ? 'cursor-done' : ''}`} aria-hidden="true">|</span>
+              <span className="cursor" aria-hidden="true">|</span>
             </h1>
             <p className="hero-tagline">{CONFIG.tagline}</p>
             <a href="#journey" className="scroll-cue" aria-label="Scroll to explore">
@@ -568,14 +641,19 @@ export default function App() {
         </section>
 
         {/* ============ FOLLOWER STATS ============ */}
-        <section className="follower-stats" aria-label="Follower counts">
+        <section
+          className="follower-stats"
+          aria-label="Follower counts"
+          ref={followerStatsRef}
+          data-dot-zone="follower-stats"
+        >
           <div className="follower-stats-inner">
-            {CONFIG.followerStats.map((f) => (
-              <div key={f.platform} className="follower-stat">
+            {CONFIG.followers.map((f) => (
+              <div key={f.label} className="follower-stat">
                 <span className="follower-icon"><Icon name={f.icon} /></span>
                 <div>
-                  <p className="follower-count">{f.count}</p>
-                  <p className="follower-label">{f.platform} Followers</p>
+                  <AnimatedFollowerCount count={f.count} active={followersInView} />
+                  <p className="follower-label">{f.label}</p>
                 </div>
               </div>
             ))}
@@ -595,27 +673,26 @@ export default function App() {
         </section>
 
         {/* ============ PRs ============ */}
-        <section className="prs" id="prs">
+        <section className="prs stack-panel" id="prs" data-dot-zone="prs">
           <div className="section-inner">
-            <div className="section-head">
-              <div>
-                <h2 className="section-title">Personal Records</h2>
-                <p className="section-sub">Two events, one focus.</p>
-              </div>
-              <GalleryChip index={0} />
-            </div>
+            <p className="section-eyebrow">01 — BY THE NUMBERS</p>
+            <h2 className="section-title">Personal Records</h2>
+            <p className="section-sub">Two events, one focus.</p>
 
-            <div className="pr-list">
+            <div className="pr-grid">
               {CONFIG.prs.map((pr, idx) => (
                 <div
                   key={pr.event}
                   ref={(el) => (prReveal.refs.current[idx] = el)}
                   data-idx={idx}
                   style={{ '--i': idx, '--pr-color': pr.color }}
-                  className={`pr-row ${prReveal.visible.has(idx) ? 'in-view' : ''}`}
+                  className={`pr-card ${prReveal.visible.has(idx) ? 'in-view' : ''}`}
                 >
-                  <p className="pr-event">{pr.event}</p>
-                  <p className="pr-mark">{pr.mark}</p>
+                  <div className="pr-card-top">
+                    <span className="pr-icon"><Icon name="stopwatch" /></span>
+                    <p className="pr-event">{pr.event}</p>
+                  </div>
+                  <AnimatedPrMark mark={pr.mark} active={prReveal.visible.has(idx)} />
                   <p className="pr-meta">{pr.meta}</p>
                 </div>
               ))}
@@ -623,26 +700,25 @@ export default function App() {
           </div>
         </section>
 
-        {/* ============ ACHIEVEMENTS ============ */}
-        <section className="achievements" id="achievements">
-          <div className="section-inner">
-            <div className="section-head">
-              <div>
-                <h2 className="section-title">Achievements</h2>
-                <p className="section-sub">Results that back up the times.</p>
-              </div>
-              <GalleryChip index={1} />
-            </div>
+        <Divider />
 
-            <div className="achievements-list">
+        {/* ============ ACHIEVEMENTS ============ */}
+        <section className="achievements stack-panel" id="achievements" data-dot-zone="achievements">
+          <div className="section-inner">
+            <p className="section-eyebrow">02 — HONORS &amp; RESULTS</p>
+            <h2 className="section-title">Achievements</h2>
+            <p className="section-sub">Results that back up the times.</p>
+
+            <div className="achievements-grid">
               {CONFIG.achievements.map((a, idx) => (
                 <div
                   key={a.title}
                   ref={(el) => (achievementReveal.refs.current[idx] = el)}
                   data-idx={idx}
                   style={{ '--i': idx }}
-                  className={`achievement-row ${achievementReveal.visible.has(idx) ? 'in-view' : ''}`}
+                  className={`achievement-card ${achievementReveal.visible.has(idx) ? 'in-view' : ''}`}
                 >
+                  <span className="achievement-icon"><Icon name="medal" /></span>
                   <p className="achievement-meta">{a.meta}</p>
                   <h3 className="achievement-title">{a.title}</h3>
                   <p className="achievement-detail">{a.detail}</p>
@@ -652,40 +728,62 @@ export default function App() {
           </div>
         </section>
 
+        <Divider flip />
+
         {/* ============ SPONSORS ============ */}
-        <section className="sponsors" id="sponsors">
+        <section className="sponsors stack-panel" id="sponsors" data-dot-zone="sponsors">
           <div className="section-inner">
-            <div className="section-head">
-              <div>
-                <h2 className="section-title">Sponsors &amp; Partners</h2>
-                <p className="section-sub">The brands behind every mile.</p>
-              </div>
-              <GalleryChip index={2} />
-            </div>
+            <p className="section-eyebrow">03 — BACKED BY</p>
+            <h2 className="section-title">Sponsors &amp; Partners</h2>
+            <p className="section-sub">The brands behind every mile.</p>
           </div>
 
           <div className="sponsor-carousel">
             <div className="sponsor-track">
               {sponsorTrack.map((s, idx) => (
-                <div key={idx} className="sponsor-item">
-                  <span className="sponsor-logo" style={{ background: s.color }}>{s.initials}</span>
+                <div key={idx} className="sponsor-card" style={{ '--sponsor-color': s.color }}>
+                  <div className="sponsor-mark">{s.initials}</div>
                   <p className="sponsor-name">{s.name}</p>
+                  <p className="sponsor-tier">{s.tier}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ============ JOURNEY / TIMELINE ============ */}
-        <section className="journey" id="journey">
+        <Divider />
+
+        {/* ============ GALLERY ============ */}
+        <section className="gallery stack-panel" id="gallery" data-dot-zone="gallery">
           <div className="section-inner">
-            <div className="section-head">
-              <div>
-                <h2 className="section-title">Middle School to Now</h2>
-                <p className="section-sub">Every season builds on the last.</p>
-              </div>
-              <GalleryChip index={0} />
-            </div>
+            <p className="section-eyebrow">04 — ON THE LINE</p>
+            <h2 className="section-title">Race Day</h2>
+          </div>
+
+          <div className="gallery-grid section-inner">
+            {CONFIG.gallery.map((g, idx) => (
+              <figure
+                key={g.src}
+                ref={(el) => (galleryReveal.refs.current[idx] = el)}
+                data-idx={idx}
+                style={{ '--i': idx }}
+                className={`gallery-item ${galleryReveal.visible.has(idx) ? 'in-view' : ''}`}
+              >
+                <img src={g.src} alt={g.caption} loading="lazy" onLoad={handleImgLoad} />
+                <figcaption>{g.caption}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+
+        <Divider flip />
+
+        {/* ============ JOURNEY / TIMELINE ============ */}
+        <section className="journey stack-panel" id="journey" data-dot-zone="journey">
+          <div className="section-inner">
+            <p className="section-eyebrow">05 — THE JOURNEY</p>
+            <h2 className="section-title">Middle School to Now</h2>
+            <p className="section-sub">Every season builds on the last.</p>
           </div>
 
           <div className="timeline-wrap" ref={timelineWrapRef}>
@@ -715,7 +813,7 @@ export default function App() {
       </main>
 
       {/* ============ FOOTER ============ */}
-      <footer className="site-footer" id="contact">
+      <footer className="site-footer" id="contact" data-dot-zone="contact">
         <div className="footer-inner">
           <div className="footer-brand">
             <p className="footer-name">{CONFIG.name}</p>
