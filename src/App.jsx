@@ -36,87 +36,128 @@ const CONFIG = {
   // Social links — used in the nav bar AND the social strip.
   // icon options: instagram, twitter, tiktok, strava, youtube, linkedin, email
   socials: [
-    { platform: 'Instagram', icon: 'instagram', url: 'https://instagram.com/' },
-    { platform: 'YouTube', icon: 'youtube', url: 'https://youtube.com/' },
-    { platform: 'Twitter/X', icon: 'twitter', url: 'https://twitter.com/' },
-    { platform: 'Strava', icon: 'strava', url: 'https://strava.com/' },
-    { platform: 'TikTok', icon: 'tiktok', url: 'https://tiktok.com/' },
-  ],
+  { platform: 'Instagram', icon: 'instagram', url: 'https://instagram.com/nikoschultzzz' },
+  { platform: 'YouTube', icon: 'youtube', url: 'https://youtube.com/@nikoschultz' },
+  { platform: 'Twitter/X', icon: 'twitter', url: '' }, // Add verified handle when available
+  { platform: 'Strava', icon: 'strava', url: '' }, // Add verified profile when available
+  { platform: 'TikTok', icon: 'tiktok', url: 'https://tiktok.com/@nikojschultz' },
+],
 
-  // Personal Records — 800m only, indoor and outdoor.
-  // `color` tints that card's top bar, icon, and hover glow.
-  prs: [
-    { event: '800m Indoor', mark: '1:53.02', meta: 'Conference Indoor Championships — Feb 2026', color: '#B7742F' },
-    { event: '800m Outdoor', mark: '1:52.14', meta: 'Sectional Championships — May 2026', color: '#3E6B72' },
-  ],
+// Personal Records — 800m only, indoor and outdoor.
+// `color` tints that card's top bar, icon, and hover glow.
+prs: [
+  {
+    event: '800m Indoor',
+    mark: '1:46.67',
+    meta: 'PSU Sykes & Sabock Challenge — Feb. 7, 2026',
+    color: '#B7742F',
+  },
+  {
+    event: '800m Outdoor',
+    mark: '1:45.50',
+    meta: 'NCAA Division I Outdoor Championships — June 12, 2026',
+    color: '#3E6B72',
+  },
+],
 
-  // Achievements — wins, medals, and honors
-  achievements: [
-    { title: '1st Place, 800m', meta: 'Sectional Championships — 2026', detail: 'Broke away with 200m to go to take the section title in a personal-best time.' },
-    { title: '2nd Place, 800m Indoor', meta: 'Conference Indoor Championships — 2026', detail: 'Ran down the leader on the final straight, finishing a stride short of the win.' },
-    { title: 'All-Conference, Indoor Track', meta: 'Winter 2026', detail: 'Named to the all-conference team after a season of consistent top-three finishes.' },
-    { title: '3rd Place, 800m', meta: 'Regional Championships — 2025', detail: 'Held off a five-way pack in the final 100m to medal at regionals as a junior.' },
-    { title: 'Team MVP, Track & Field', meta: 'Roosevelt High School — 2025', detail: 'Voted team MVP by coaches and teammates for the outdoor season.' },
-    { title: 'Academic All-Conference', meta: '2025 — 2026', detail: 'Recognized for maintaining conference honor-roll standards across both seasons.' },
-  ],
+// Achievements — wins, medals, and honors
+achievements: [
+  {
+    title: 'First-Team All-American, 800m',
+    meta: 'NCAA Division I Outdoor Championships — 2026',
+    detail: 'Finished sixth in the NCAA outdoor 800m final in 1:45.50 in Eugene, Oregon.',
+  },
+  {
+    title: 'NCAA Outdoor 800m Finalist',
+    meta: 'Eugene, Oregon — 2026',
+    detail: 'Qualified for the NCAA final after running 1:45.47 in the semifinal round.',
+  },
+  {
+    title: 'Bronze Medal, 800m',
+    meta: 'Big Ten Outdoor Championships — 2026',
+    detail: 'Earned third place in the men’s 800m, clocking 1:47.70 for Penn State.',
+  },
+  {
+    title: 'Second-Team All-American, 800m',
+    meta: 'NCAA Division I Indoor Championships — 2026',
+    detail: 'Competed in the NCAA indoor 800m championship round for Penn State.',
+  },
+  {
+    title: 'Academic All-Big Ten',
+    meta: '2023, 2024 & 2025',
+    detail: 'Recognized for academic achievement during his time at the University of Nebraska.',
+  },
+  {
+    title: 'USTFCCCA All-Academic',
+    meta: '2023',
+    detail: 'Earned national academic recognition as a student-athlete at Nebraska.',
+  },
+],
 
-  // Sponsors — shown in the sliding carousel.
-  // color accepts any CSS color; it sets the card's top bar + logo mark.
-  sponsors: [
-    { name: 'BiCarb', tier: 'Nutrition Partner', initials: 'BC', color: '#7A9E7E' },
-    { name: 'Eddie Bauer', tier: 'Apparel Partner', initials: 'EB', color: '#3E5C76' },
-    { name: 'TrailForge', tier: 'Gear Sponsor', initials: 'TF', color: '#B7742F' },
-    { name: 'PaceLab', tier: 'Training Partner', initials: 'PL', color: '#9A5A44' },
-    { name: 'NorthWind Co.', tier: 'Local Sponsor', initials: 'NW', color: '#556270' },
-  ],
+// Sponsors — shown in the sliding carousel.
+// color accepts any CSS color; it sets the card's top bar + logo mark.
+// No verified personal sponsors should be displayed until approved by Niko.
+sponsors: [
+  // Example after approval:
+  // { name: 'Brand Name', tier: 'Official Partner', initials: 'BN', color: '#0B3A53' },
+],
 
-  // Race-day photos — drop matching files into /public/images.
-  // No longer shown as a standalone gallery section; instead these are
-  // scattered through the site as small image chips next to section titles.
-  gallery: [
-    { src: '/images/gallery-1.jpg', caption: 'Kicking for the line — Sectional Championships' },
-    { src: '/images/gallery-2.jpg', caption: 'Pre-race warmup — Regional Championships' },
-    { src: '/images/gallery-3.jpg', caption: 'Podium finish — Conference Indoor' },
-  ],
+// Race-day photos — drop matching files into /public/images.
+// No longer shown as a standalone gallery section; instead these are
+// scattered through the site as small image chips next to section titles.
+gallery: [
+  {
+    src: '/images/gallery-1.jpg',
+    caption: 'NCAA Outdoor Championships — Eugene, Oregon',
+  },
+  {
+    src: '/images/gallery-2.jpg',
+    caption: 'Penn State 800m competition',
+  },
+  {
+    src: '/images/gallery-3.jpg',
+    caption: 'Race-day preparation',
+  },
+],
 
-  // Journey timeline — order matters, earliest first
-  timeline: [
-    {
-      year: '2019 — 2021',
-      title: 'Middle School Track',
-      org: 'Lincoln Middle School',
-      desc: 'First laps on a real track. Ran junior varsity distance events and found out running could be more than a gym-class mile.',
-    },
-    {
-      year: '2021 — 2023',
-      title: 'Freshman & JV Years',
-      org: 'Roosevelt High School',
-      desc: 'Moved up to the high school program. Cut his mile time by nearly a minute across two seasons of varsity-adjacent racing.',
-    },
-    {
-      year: '2023 — 2025',
-      title: 'Varsity Breakthrough',
-      org: 'Roosevelt High School',
-      desc: 'Earned a varsity spot, qualified for regionals in cross country, and set five personal records in a single outdoor season.',
-    },
-    {
-      year: '2025 — Present',
-      title: 'Chasing State, Chasing More',
-      org: 'Roosevelt High School / Independent Training',
-      desc: 'Training for a state qualifying mark in the 800m, picking up local sponsors along the way, and building toward the next level.',
-    },
-  ],
+// Journey timeline — order matters, earliest first
+timeline: [
+  {
+    year: '2017 — 2021',
+    title: 'High School Career',
+    org: 'Plainfield South High School',
+    desc: 'Developed as a middle-distance athlete in Plainfield, Illinois. A three-time state qualifier, sectional champion, and conference champion, Schultz also set the Illinois state 600m record at 1:19.86.',
+  },
+  {
+    year: '2021 — 2025',
+    title: 'Nebraska Track & Field',
+    org: 'University of Nebraska–Lincoln',
+    desc: 'Competed for Nebraska while earning a degree in Business Marketing with a minor in Entrepreneurship. Became an Academic All-Big Ten honoree and USTFCCCA All-Academic selection.',
+  },
+  {
+    year: '2025 — 2026',
+    title: 'Penn State Breakthrough',
+    org: 'Penn State Track & Field',
+    desc: 'Transferred to Penn State and posted a breakthrough senior season, including a 1:46.67 indoor 800m and a 1:45.50 outdoor 800m.',
+  },
+  {
+    year: '2026 — Present',
+    title: 'NCAA All-American',
+    org: 'Penn State / Puerto Rico Eligible',
+    desc: 'Finished sixth in the NCAA Division I Outdoor 800m final to earn First-Team All-American honors. Continues to compete in the 800m while building a platform as an athlete and creator.',
+  },
+],
 
-  // Footer links
-  footerLinks: [
-    { label: 'Records', href: '#prs' },
-    { label: 'Achievements', href: '#achievements' },
-    { label: 'Sponsors', href: '#sponsors' },
-    { label: 'Journey', href: '#journey' },
-  ],
+// Footer links
+footerLinks: [
+  { label: 'Records', href: '#prs' },
+  { label: 'Achievements', href: '#achievements' },
+  { label: 'Sponsors', href: '#sponsors' },
+  { label: 'Journey', href: '#journey' },
+],
 
-  gofundme: 'https://gofundme.com/',
-  contact: 'mailto:developer@example.com',
+gofundme: '',
+contact: 'mailto:contact@nikoschultz.com', // Replace with Niko's approved contact email
 }
 
 /* ==========================================================================
