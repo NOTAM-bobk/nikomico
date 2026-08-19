@@ -9,7 +9,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 const CONFIG = {
 
   name: 'Niko Schultz',
-  tagline: '800m specialist. Indoor and outdoor. Still chasing state.',
+  tagline: 'Future Olympian, Future Entrepreneur, Future 1 Million Followers',
 
   // Drop matching files into /public/images to bring these to life.
   images: {
