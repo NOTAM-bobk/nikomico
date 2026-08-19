@@ -184,45 +184,61 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 500; 
 }
 
 .nav-logo {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  color: var(--ink);
+  display: flex;
+  align-items: center;
   flex-shrink: 0;
-  transition: opacity 0.25s var(--ease);
 }
-.nav-logo:hover { opacity: 0.65; }
+
+.nav-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--line-strong);
+  background: var(--cream-2);
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+}
+.nav-logo:hover .nav-avatar { opacity: 0.75; transform: scale(0.96); }
 
 .nav-links {
   display: flex;
-  gap: 26px;
+  gap: 8px;
   align-items: center;
 }
 
+/* Quick links styled as solid black pill buttons — rounded, spaced,
+   with a real button feel (depth, lift on hover, press on click). */
 .nav-links a {
   font-size: 13px;
-  font-weight: 500;
-  color: var(--charcoal);
+  font-weight: 600;
+  color: var(--white);
   letter-spacing: 0.01em;
   position: relative;
-  padding: 6px 0;
-  transition: color 0.25s var(--ease);
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: var(--ink);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 1px 2px rgba(26, 25, 23, 0.4),
+    0 8px 18px -10px rgba(26, 25, 23, 0.55);
+  transition: background 0.2s var(--ease), transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
 
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  height: 1.5px;
-  background: var(--accent);
-  transition: width 0.35s var(--ease);
+.nav-links a:hover {
+  background: var(--ink-soft);
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.1) inset,
+    0 2px 4px rgba(26, 25, 23, 0.4),
+    0 12px 22px -10px rgba(26, 25, 23, 0.6);
 }
 
-.nav-links a:hover { color: var(--ink); }
-.nav-links a:hover::after { width: 100%; }
+.nav-links a:active {
+  transform: translateY(0) scale(0.96);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 2px 6px -2px rgba(26, 25, 23, 0.5);
+}
 
 .nav-right {
   display: flex;
@@ -361,6 +377,14 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 500; 
   color: var(--accent);
   margin-left: 4px;
   animation: blink 0.9s step-end infinite;
+  transition: opacity 0.4s var(--ease);
+}
+
+/* Typing indicator: once the name has finished typing, fade the
+   cursor out and stop the blink instead of leaving it blinking forever. */
+.cursor.cursor-done {
+  animation: none;
+  opacity: 0;
 }
 
 @keyframes blink {
@@ -426,6 +450,63 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 500; 
 }
 
 /* ==========================================================================
+   FOLLOWER STATS — sits right below the hero, above the social strip
+   ========================================================================== */
+
+.follower-stats {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--line);
+}
+
+.follower-stats-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 40px 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px 56px;
+  justify-content: center;
+  align-items: center;
+}
+
+.follower-stat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.follower-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--accent-pale);
+  color: var(--accent-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.follower-icon svg { width: 17px; height: 17px; }
+
+.follower-count {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.1;
+}
+
+.follower-label {
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--stone);
+  margin: 3px 0 0;
+}
+
+/* ==========================================================================
    SOCIAL STRIP
    ========================================================================== */
 
@@ -469,15 +550,37 @@ section { position: relative; z-index: 1; }
 
 .prs, .achievements, .journey { padding: 112px 0 96px; }
 .sponsors { padding: 112px 0; }
-.gallery { padding: 0 0 112px; }
 
-.section-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.28em;
-  color: var(--accent);
-  margin: 0 0 16px;
+/* Header row for a section: title/sub on one side, a small race-day
+   photo box (image-chip) on the other. Wraps on narrow screens. */
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
 }
+
+.image-chip {
+  display: block;
+  flex-shrink: 0;
+  width: 96px;
+  height: 96px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--cream-2);
+}
+
+.image-chip img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(12%) saturate(105%);
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+.image-chip img.loaded { opacity: 1; }
 
 .section-title {
   font-size: clamp(1.9rem, 4vw, 2.9rem);
@@ -493,72 +596,30 @@ section { position: relative; z-index: 1; }
 }
 
 /* ==========================================================================
-   PRs — restyled: colored top bar + icon badge per event, bigger mark,
-   corner watermark for texture.
+   PRs — no cards, just line-separated rows.
    ========================================================================== */
 
-.pr-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+.pr-list {
   max-width: 760px;
-  gap: 18px;
+  margin-top: 44px;
+  border-top: 1px solid var(--line);
 }
 
-.pr-card {
-  position: relative;
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-top: 3px solid var(--pr-color, var(--accent));
-  border-radius: 14px;
-  padding: 34px 30px;
-  overflow: hidden;
-  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease), border-color 0.35s var(--ease);
+.pr-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 14px 28px;
+  padding: 26px 0;
+  border-bottom: 1px solid var(--line);
   opacity: 0;
-  transform: translateY(18px);
+  transform: translateY(14px);
 }
 
-.pr-card::after {
-  content: '';
-  position: absolute;
-  right: -30px;
-  bottom: -30px;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: var(--pr-color, var(--accent));
-  opacity: 0.06;
-}
-
-.pr-card.in-view {
+.pr-row.in-view {
   animation: fade-up 0.7s var(--ease) forwards;
-  animation-delay: calc(var(--i) * 140ms);
+  animation-delay: calc(var(--i) * 130ms);
 }
-
-.pr-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--line-strong);
-  box-shadow: 0 22px 40px -24px rgba(26, 25, 23, 0.24);
-}
-
-.pr-card-top {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 22px;
-}
-
-.pr-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
-  background: var(--pr-color, var(--accent));
-  color: var(--white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.pr-icon svg { width: 16px; height: 16px; }
 
 .pr-event {
   font-family: var(--font-mono);
@@ -566,67 +627,44 @@ section { position: relative; z-index: 1; }
   letter-spacing: 0.14em;
   color: var(--stone);
   text-transform: uppercase;
+  width: 140px;
+  flex-shrink: 0;
 }
 
 .pr-mark {
-  position: relative;
   font-family: var(--font-mono);
-  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-size: clamp(1.6rem, 3.2vw, 2.2rem);
   font-weight: 700;
-  color: var(--ink);
+  color: var(--pr-color, var(--ink));
   letter-spacing: -0.01em;
 }
 
 .pr-meta {
-  position: relative;
-  margin-top: 12px;
   font-size: 12.5px;
   color: var(--stone);
+  margin-left: auto;
 }
 
 /* ==========================================================================
    ACHIEVEMENTS
    ========================================================================== */
 
-.achievements-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
+.achievements-list {
+  margin-top: 44px;
+  border-top: 1px solid var(--line);
 }
 
-.achievement-card {
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 30px 26px;
+.achievement-row {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--line);
   opacity: 0;
-  transform: translateY(18px);
-  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease), border-color 0.35s var(--ease);
+  transform: translateY(14px);
 }
 
-.achievement-card.in-view {
+.achievement-row.in-view {
   animation: fade-up 0.7s var(--ease) forwards;
-  animation-delay: calc(var(--i) * 110ms);
+  animation-delay: calc(var(--i) * 100ms);
 }
-
-.achievement-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--line-strong);
-  box-shadow: 0 18px 32px -24px rgba(26, 25, 23, 0.2);
-}
-
-.achievement-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: var(--accent-pale);
-  color: var(--accent-ink);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-.achievement-icon svg { width: 18px; height: 18px; }
 
 .achievement-meta {
   font-family: var(--font-mono);
@@ -634,13 +672,13 @@ section { position: relative; z-index: 1; }
   letter-spacing: 0.12em;
   color: var(--stone);
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .achievement-title {
   font-size: 1.08rem;
   color: var(--ink);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   line-height: 1.3;
 }
 
@@ -648,6 +686,7 @@ section { position: relative; z-index: 1; }
   font-size: 13.5px;
   line-height: 1.6;
   color: var(--charcoal);
+  max-width: 620px;
 }
 
 /* ==========================================================================
@@ -665,14 +704,11 @@ section { position: relative; z-index: 1; }
 
 .sponsor-track {
   display: flex;
-  gap: 20px;
+  gap: 44px;
   width: max-content;
   animation: sponsor-scroll 70s linear infinite;
   will-change: transform;
-}
-
-.sponsor-carousel:hover .sponsor-track {
-  animation-play-state: paused;
+  /* Runs forever — intentionally no pause on hover or click. */
 }
 
 @keyframes sponsor-scroll {
@@ -680,109 +716,36 @@ section { position: relative; z-index: 1; }
   to { transform: translateX(-50%); }
 }
 
-.sponsor-card {
-  --sponsor-color: var(--accent);
+/* No card container — just a logo mark and a name. */
+.sponsor-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
   flex: 0 0 auto;
-  width: 240px;
-  border-radius: 12px;
-  padding: 28px 24px;
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-top: 3px solid var(--sponsor-color);
-  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+  padding: 4px 0;
 }
 
-.sponsor-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 22px 40px -24px rgba(26, 25, 23, 0.22);
-}
-
-.sponsor-mark {
+.sponsor-logo {
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  background: var(--sponsor-color);
   color: var(--white);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 18px;
-  margin-bottom: 18px;
+  font-size: 17px;
+  flex-shrink: 0;
 }
 
 .sponsor-name {
   font-size: 15px;
   font-weight: 600;
   color: var(--ink);
-  margin-bottom: 4px;
-}
-
-.sponsor-tier {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.12em;
-  color: var(--stone);
-  text-transform: uppercase;
-}
-
-/* ==========================================================================
-   GALLERY — images fade in once actually loaded instead of popping in
-   white/blank.
-   ========================================================================== */
-
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 18px;
-}
-
-.gallery-item {
-  position: relative;
+  white-space: nowrap;
   margin: 0;
-  border-radius: 10px;
-  overflow: hidden;
-  aspect-ratio: 4 / 3;
-  background: var(--cream-2);
-  border: 1px solid var(--line);
-  opacity: 0;
-  transform: translateY(18px);
 }
-
-.gallery-item.in-view {
-  animation: fade-up 0.7s var(--ease) forwards;
-  animation-delay: calc(var(--i) * 120ms);
-}
-
-.gallery-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: grayscale(12%) saturate(105%);
-  opacity: 0;
-  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
-}
-
-.gallery-item img.loaded { opacity: 1; }
-.gallery-item:hover img { transform: scale(1.06); }
-
-.gallery-item figcaption {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 16px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.03em;
-  color: var(--white);
-  background: linear-gradient(180deg, transparent, rgba(26, 25, 23, 0.78));
-  opacity: 0;
-  transition: opacity 0.3s var(--ease);
-}
-
-.gallery-item:hover figcaption { opacity: 1; }
 
 /* ==========================================================================
    JOURNEY / TIMELINE
@@ -1118,6 +1081,5 @@ section { position: relative; z-index: 1; }
   .timeline-dot { left: -52px; }
   .footer-inner { padding: 0 20px 40px; }
   .prs, .achievements, .journey, .sponsors { padding: 76px 0 56px; }
-  .gallery { padding: 0 0 76px; }
-  .gallery-grid { padding: 0 20px; }
+  .image-chip { width: 64px; height: 64px; border-radius: 10px; }
 }
