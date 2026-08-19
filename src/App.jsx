@@ -98,8 +98,30 @@ achievements: [
 // color accepts any CSS color; it sets the card's top bar + logo mark.
 // No verified personal sponsors should be displayed until approved by Niko.
 sponsors: [
-  // Example after approval:
-  // { name: 'Brand Name', tier: 'Official Partner', initials: 'BN', color: '#0B3A53' },
+  {
+    name: 'Bicarb 3.0',
+    tier: 'Performance Nutrition Partner',
+    initials: 'B3',
+    color: '#7A9E7E',
+    url: 'https://www.bicarb.shop/',
+    detail: 'Official Bicarb 3.0 athlete. Use code “NIKO” for 10% off.',
+  },
+  {
+    name: 'Andersen Endurance Sports Management',
+    tier: 'Athlete Representation',
+    initials: 'AE',
+    color: '#0B3A53',
+    url: 'https://www.instagram.com/andersenendurance/',
+    detail: 'Professional athlete representation and career management.',
+  },
+  {
+    name: 'Erly App',
+    tier: 'Training Technology Partner',
+    initials: 'ER',
+    color: '#B7742F',
+    url: '', // Add Erly’s approved website or campaign link
+    detail: 'Training, recovery, and performance support.',
+  },
 ],
 
 // Race-day photos — drop matching files into /public/images.
