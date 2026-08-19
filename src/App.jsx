@@ -19,8 +19,8 @@ const CONFIG = {
 
   // Follower counts shown in the stats strip below the hero.
   followerStats: [
-    { platform: 'YouTube', icon: 'youtube', count: '12.4K' },
-    { platform: 'Instagram', icon: 'instagram', count: '8.9K' },
+    { platform: 'YouTube', icon: 'youtube', count: '22.1k' },
+    { platform: 'Instagram', icon: 'instagram', count: '27.4' },
   ],
 
   // Top nav quick links (in-page anchors or external URLs)
